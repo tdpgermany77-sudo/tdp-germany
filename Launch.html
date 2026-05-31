@@ -17,7 +17,6 @@
       background:#05060e; position:relative;
       display:flex; align-items:center; justify-content:center; text-align:center;
     }
-    /* deep space glows */
     .bg {
       position:fixed; inset:0; z-index:0;
       background:
@@ -26,7 +25,13 @@
         radial-gradient(40% 40% at 80% 10%, rgba(243,111,33,.15), transparent 70%),
         #05060e;
     }
-    /* perspective grid floor */
+    /* slow rotating aurora behind everything */
+    .aurora {
+      position:fixed; left:50%; top:42%; width:140vmax; height:140vmax; z-index:0;
+      transform:translate(-50%,-50%); border-radius:50%;
+      background:conic-gradient(from 0deg, transparent, rgba(253,184,19,.10), transparent 30%, rgba(226,35,26,.10), transparent 60%, rgba(243,111,33,.10), transparent);
+      animation:spin 28s linear infinite; filter:blur(20px);
+    }
     .grid {
       position:fixed; left:50%; bottom:-10%; width:240%; height:55%; z-index:0;
       transform:translateX(-50%) perspective(420px) rotateX(68deg);
@@ -36,76 +41,105 @@
       background-size:44px 44px;
       mask-image:linear-gradient(to top, #000 0%, transparent 80%);
       -webkit-mask-image:linear-gradient(to top, #000 0%, transparent 80%);
-      animation:gridMove 2.4s linear infinite; opacity:.6;
+      animation:gridMove 2.4s linear infinite; opacity:.55;
     }
     @keyframes gridMove { to { background-position:0 44px, 44px 0; } }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes spinC { to { transform:translate(-50%,-50%) rotate(360deg); } }
     canvas#stars { position:fixed; inset:0; z-index:0; }
 
-    .wrap { position:relative; z-index:2; padding:24px; }
+    .wrap { position:relative; z-index:2; padding:24px; animation:enter 1s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes enter { 0%{opacity:0; transform:translateY(26px) scale(.96)} 100%{opacity:1; transform:none} }
+
     .logo {
-      width:120px; height:120px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 26px;
+      width:120px; height:120px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 24px;
       box-shadow:0 0 0 2px rgba(253,184,19,.6), 0 0 40px 6px rgba(253,184,19,.45);
       animation:floaty 3.5s ease-in-out infinite;
     }
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
     .eyebrow {
       font-family:'Orbitron',sans-serif; letter-spacing:6px; font-size:.72rem; font-weight:700;
-      color:var(--gold); text-transform:uppercase; opacity:.85; margin-bottom:10px;
+      color:var(--gold); text-transform:uppercase; opacity:.9; margin-bottom:10px;
     }
+    .eyebrow .dot { animation:blink 1.2s steps(1) infinite; }
+    @keyframes blink { 50%{opacity:.2} }
     h1 {
       font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(1.8rem,5.4vw,3rem);
-      line-height:1.05; letter-spacing:2px;
-      text-shadow:0 0 18px rgba(253,184,19,.45);
+      line-height:1.05; letter-spacing:2px; animation:glow 2.6s ease-in-out infinite;
     }
-    h1 span { color:var(--red); text-shadow:0 0 18px rgba(226,35,26,.6); }
+    h1 span { color:var(--red); }
+    @keyframes glow {
+      0%,100% { text-shadow:0 0 14px rgba(253,184,19,.35); }
+      50%     { text-shadow:0 0 26px rgba(253,184,19,.7), 0 0 42px rgba(226,35,26,.35); }
+    }
     .telugu { font-family:'Tiro Telugu',serif; font-size:1.2rem; margin-top:8px; color:#ffe9c2; }
 
     /* countdown ring */
-    .ring { position:relative; width:min(280px,72vw); aspect-ratio:1; margin:30px auto 6px; }
-    .ring svg { width:100%; height:100%; transform:rotate(-90deg); filter:drop-shadow(0 0 10px rgba(253,184,19,.55)); }
+    .ring { position:relative; width:min(290px,74vw); aspect-ratio:1; margin:30px auto 6px; }
+    .ring svg.dial { width:100%; height:100%; transform:rotate(-90deg); filter:drop-shadow(0 0 10px rgba(253,184,19,.55)); }
     .ring__track { fill:none; stroke:rgba(255,255,255,.08); stroke-width:6; }
     .ring__bar {
       fill:none; stroke:url(#grad); stroke-width:6; stroke-linecap:round;
-      stroke-dasharray:565.48; stroke-dashoffset:0;
-      animation:drain 10s linear forwards;
+      stroke-dasharray:565.48; stroke-dashoffset:0; animation:drain 10s linear forwards;
     }
     @keyframes drain { to { stroke-dashoffset:565.48; } }
+    /* decorative dashed ring + orbiting dot */
+    .dashring { position:absolute; inset:9%; border-radius:50%; border:1px dashed rgba(253,184,19,.28); animation:spin 16s linear infinite reverse; }
+    .orbit { position:absolute; inset:0; animation:spin 3.2s linear infinite; }
+    .orbit::before {
+      content:''; position:absolute; top:-3px; left:50%; width:13px; height:13px; margin-left:-6.5px;
+      border-radius:50%; background:var(--gold); box-shadow:0 0 16px 5px rgba(253,184,19,.8);
+    }
     .num {
       position:absolute; inset:0; display:grid; place-items:center;
       font-family:'Orbitron',sans-serif; font-weight:900; color:#fff;
-      font-size:clamp(4rem,16vw,7rem); text-shadow:0 0 24px rgba(253,184,19,.6);
+      font-size:clamp(4rem,16vw,7rem); text-shadow:0 0 26px rgba(253,184,19,.65);
     }
     .num.tick { animation:tick .5s ease; }
-    @keyframes tick { 0%{transform:scale(.55);opacity:.2;filter:blur(4px)} 60%{transform:scale(1.1);opacity:1;filter:blur(0)} 100%{transform:scale(1)} }
+    @keyframes tick { 0%{transform:scale(.5);opacity:.1;filter:blur(5px)} 60%{transform:scale(1.12);opacity:1;filter:blur(0)} 100%{transform:scale(1)} }
+
     .hint {
-      font-family:'Orbitron',sans-serif; letter-spacing:5px; text-transform:uppercase;
-      font-size:.72rem; color:#cdd2e6; opacity:.8; margin-top:14px;
+      font-family:'Orbitron',sans-serif; letter-spacing:4px; text-transform:uppercase;
+      font-size:.72rem; color:#cdd2e6; opacity:.85; margin-top:16px; min-height:1.1em;
+      transition:opacity .3s ease;
     }
     .skip {
-      margin-top:30px; background:transparent; color:var(--gold); cursor:pointer;
+      margin-top:28px; background:transparent; color:var(--gold); cursor:pointer;
       border:1.5px solid rgba(253,184,19,.6); font-family:'Orbitron',sans-serif; font-weight:700;
       letter-spacing:2px; font-size:.78rem; text-transform:uppercase;
       padding:12px 26px; border-radius:999px; transition:.25s ease;
     }
-    .skip:hover { background:var(--gold); color:#05060e; box-shadow:0 0 24px rgba(253,184,19,.6); }
+    .skip:hover { background:var(--gold); color:#05060e; box-shadow:0 0 26px rgba(253,184,19,.65); transform:translateY(-2px); }
+
+    /* warp flash on launch */
+    .flash { position:fixed; inset:0; z-index:5; pointer-events:none; opacity:0;
+      background:radial-gradient(circle at 50% 60%, #fff, var(--gold) 40%, var(--red) 90%); }
+    body.launching .flash { animation:flash .7s ease forwards; }
+    body.launching .wrap { animation:warp .7s ease forwards; }
+    @keyframes flash { 0%{opacity:0} 100%{opacity:1} }
+    @keyframes warp { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.5);opacity:0;filter:blur(8px)} }
+
     @media (prefers-reduced-motion: reduce) {
-      .grid,.logo,.ring__bar,.num.tick { animation:none; }
+      .grid,.aurora,.logo,.ring__bar,.dashring,.orbit,.num.tick,h1 { animation:none; }
     }
   </style>
 </head>
 <body>
   <div class="bg"></div>
+  <div class="aurora"></div>
   <div class="grid"></div>
   <canvas id="stars"></canvas>
+  <div class="flash"></div>
 
   <div class="wrap">
     <img class="logo" src="logos/tdp-germany-logo.webp" alt="TDP Germany logo" />
-    <div class="eyebrow">System Initializing</div>
+    <div class="eyebrow">System Initializing<span class="dot">_</span></div>
     <h1>NRI TDP <span>GERMANY</span></h1>
     <p class="telugu">తెలుగుదేశం పార్టీ — జర్మనీ విభాగం</p>
 
     <div class="ring">
-      <svg viewBox="0 0 200 200" aria-hidden="true">
+      <svg class="dial" viewBox="0 0 200 200" aria-hidden="true">
         <defs>
           <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stop-color="#FDB813" />
@@ -116,10 +150,12 @@
         <circle class="ring__track" cx="100" cy="100" r="90" />
         <circle class="ring__bar" cx="100" cy="100" r="90" />
       </svg>
+      <div class="dashring"></div>
+      <div class="orbit"></div>
       <div class="num tick" id="count">10</div>
     </div>
 
-    <div class="hint">Launching in…</div>
+    <div class="hint" id="hint">Connecting to the community…</div>
     <button class="skip" id="skip" type="button">Enter Now →</button>
   </div>
 
@@ -131,9 +167,9 @@
       function size(){ c.width = innerWidth*dpr; c.height = innerHeight*dpr; x.setTransform(dpr,0,0,dpr,0,0); }
       size(); addEventListener('resize', size);
       var COLORS = ['rgba(253,184,19,', 'rgba(243,111,33,', 'rgba(255,255,255,'];
-      for (var i=0;i<90;i++) P.push({
+      for (var i=0;i<100;i++) P.push({
         x:Math.random()*innerWidth, y:Math.random()*innerHeight,
-        r:Math.random()*2+0.4, s:Math.random()*0.5+0.15,
+        r:Math.random()*2+0.4, s:Math.random()*0.55+0.15,
         a:Math.random()*0.6+0.2, c:COLORS[(Math.random()*COLORS.length)|0]
       });
       (function loop(){
@@ -148,13 +184,30 @@
 
     // ---- countdown ----
     (function () {
-      var n = 10, el = document.getElementById('count');
-      function go(){ try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){} window.location.href='index.html'; }
+      var n = 10, el = document.getElementById('count'), hint = document.getElementById('hint');
+      var STATUS = [
+        'Connecting to the community…',
+        'Loading events & gallery…',
+        'Syncing our story…',
+        'Almost there…'
+      ];
+      function setStatus(){
+        var i = n>7?0 : n>5?1 : n>2?2 : 3;
+        hint.style.opacity = 0;
+        setTimeout(function(){ hint.textContent = STATUS[i]; hint.style.opacity = .85; }, 150);
+      }
+      setStatus();
+      function go(){
+        try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}
+        document.body.classList.add('launching');
+        setTimeout(function(){ window.location.href='index.html'; }, 650);
+      }
       var iv = setInterval(function(){
         n--;
         if (n<=0){ clearInterval(iv); go(); return; }
         el.textContent = n;
         el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick');
+        setStatus();
       }, 1000);
       document.getElementById('skip').addEventListener('click', function(){ clearInterval(iv); go(); });
     })();
