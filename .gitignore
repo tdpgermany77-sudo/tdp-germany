@@ -2,3 +2,5 @@
 **/.DS_Store
 .claude/
 node_modules/
+leader-photos/*.png
+logos/*-original.png
