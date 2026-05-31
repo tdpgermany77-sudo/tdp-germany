@@ -58,9 +58,9 @@ a { text-decoration: none; color: inherit; }
   backdrop-filter: blur(10px); box-shadow: var(--shadow-sm);
   transition: box-shadow .3s ease;
 }
-.header__inner { display: flex; align-items: center; justify-content: space-between; height: 88px; }
+.header__inner { display: flex; align-items: center; justify-content: space-between; height: 76px; }
 .brand { display: flex; align-items: center; gap: 12px; }
-.brand__logo { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; box-shadow: var(--shadow-sm); }
+.brand__logo { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #e30000; box-shadow: var(--shadow-sm); }
 .brand__text { display: flex; flex-direction: column; line-height: 1.1; }
 .brand__text strong { font-size: 1.15rem; background: var(--grad-gold); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
 .brand__text small { color: var(--muted); font-size: .72rem; }
@@ -414,7 +414,7 @@ h2 { line-height: 1.15; }
 @media (max-width: 720px) {
   .topbar { display: none; }
   .nav {
-    position: fixed; inset: 88px 0 auto 0; flex-direction: column; background: #fff;
+    position: fixed; inset: 76px 0 auto 0; flex-direction: column; background: #fff;
     padding: 24px; box-shadow: var(--shadow); transform: translateY(-150%);
     transition: transform .3s ease; gap: 18px;
   }
