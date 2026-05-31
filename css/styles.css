@@ -141,7 +141,7 @@ a { text-decoration: none; color: inherit; }
 .hero__flag {
   position: relative; z-index: 1; width: min(440px, 90%); aspect-ratio: 1;
   border-radius: 50%; overflow: hidden;
-  box-shadow: 0 0 28px 4px rgba(255,255,255,.40), 0 14px 30px rgba(120,60,0,.18);
+  box-shadow: 0 0 0 5px rgba(255,255,255,.65), 0 0 44px 10px rgba(255,255,255,.55), 0 14px 30px rgba(120,60,0,.20);
 }
 .hero__flag img {
   position: absolute; top: 50%; left: 50%;
