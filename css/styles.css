@@ -223,9 +223,9 @@ h2 { line-height: 1.15; }
   background: var(--grad-gold); border: 4px solid #fff; box-shadow: var(--shadow-sm);
   background-size: cover; background-repeat: no-repeat; background-position: center;
 }
-.leader__photo--ntr    { background: url(../leader-photos/ntr.webp) center 18% / cover no-repeat, var(--grad-gold); }
-.leader__photo--cbn    { background: url(../leader-photos/cbn.webp) center top / cover no-repeat, var(--grad-gold); }
-.leader__photo--lokesh { background: url(../leader-photos/lokesh.webp) center top / cover no-repeat, var(--grad-gold); }
+.leader__photo--ntr    { background: url(../leader-photos/ntr.webp) center / cover no-repeat, var(--grad-gold); }
+.leader__photo--cbn    { background: url(../leader-photos/cbn.webp) center / cover no-repeat, var(--grad-gold); }
+.leader__photo--lokesh { background: url(../leader-photos/lokesh.webp) center / cover no-repeat, var(--grad-gold); }
 .leader h3 { font-size: 1.2rem; }
 .leader__role { display: block; color: var(--red); font-weight: 600; font-size: .85rem; margin: 4px 0 12px; }
 .leader p { color: var(--muted); font-size: .92rem; }
