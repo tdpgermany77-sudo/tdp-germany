@@ -367,6 +367,7 @@ h2 { line-height: 1.15; }
 .join__form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .join__form input {
   padding: 14px 16px; border: none; border-radius: 12px; font-size: .95rem; font-family: inherit;
+  min-width: 0; width: 100%;
 }
 .join__form input:focus { outline: 3px solid var(--gold); }
 .join__form input[name="profession"] { grid-column: 1 / -1; }
@@ -403,7 +404,8 @@ h2 { line-height: 1.15; }
   .about { grid-template-columns: 1fr; }
   .leaders, .cards { grid-template-columns: repeat(2, 1fr); }
   .leader--featured { transform: none; }
-  .join__inner { grid-template-columns: 1fr; }
+  .join__inner { grid-template-columns: minmax(0, 1fr); }
+  .join__text, .join__form { min-width: 0; }
   .stats__grid { grid-template-columns: repeat(2, 1fr); }
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .feature-event { grid-template-columns: 1fr; }
@@ -427,4 +429,7 @@ h2 { line-height: 1.15; }
   .event { flex-direction: column; text-align: center; }
   .gallery-years { grid-template-columns: repeat(2, 1fr); }
   .team, .team--foundation { grid-template-columns: 1fr; }
+  .join { padding: 54px 0; }
+  .join__form { grid-template-columns: 1fr; }
+  .join__form input[name="profession"] { grid-column: auto; }
 }
