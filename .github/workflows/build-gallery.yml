@@ -1,0 +1,39 @@
+name: Build gallery manifest
+
+# Whenever you add/remove folders or photos under the gallery,
+# this regenerates eventsandgallery/gallery.json automatically.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'eventsandgallery/event-gallery/**'
+      - 'tools/build-gallery.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate gallery.json from folders
+        run: python3 tools/build-gallery.py
+
+      - name: Commit manifest if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- eventsandgallery/gallery.json; then
+            git add eventsandgallery/gallery.json
+            git commit -m "Auto-update gallery manifest from folders"
+            git push
+          else
+            echo "No gallery changes."
+          fi

@@ -11,41 +11,54 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 // ===== Event Gallery (year -> albums -> photos) =====
 (function gallery() {
-  const data = window.GALLERY_DATA || {};
   const yearsWrap = document.getElementById('galleryYears');
   const modal = document.getElementById('galleryModal');
   if (!yearsWrap || !modal) return;
 
   const UPCOMING_YEAR = '2026';
+  const YEAR_MIN = 2018;
+  const YEAR_MAX = 2026;
   const gmTitle = document.getElementById('gmTitle');
   const gmBody = document.getElementById('gmBody');
   const gmBack = document.getElementById('gmBack');
   const lightbox = document.getElementById('galleryLightbox');
   const glImg = document.getElementById('glImg');
 
+  let data = {};
   let currentPhotos = [];
   let currentIndex = 0;
   let currentYear = null;
 
-  // ---- Build year cards ----
-  const years = Object.keys(data).sort(); // 2018 -> 2026
-  yearsWrap.innerHTML = years
-    .map((y) => {
-      const albums = data[y] || [];
-      const isUpcoming = y === UPCOMING_YEAR && albums.length === 0;
-      const cls = isUpcoming ? 'gallery-year gallery-year--upcoming' : 'gallery-year';
-      const label = isUpcoming
-        ? 'Coming this June'
-        : albums.length
-        ? albums.length + (albums.length === 1 ? ' album' : ' albums')
-        : 'Photos soon';
-      const soon = !isUpcoming && albums.length === 0 ? ' gallery-year--soon' : '';
-      return `<button type="button" class="${cls}${soon}" data-year="${y}">
-        <span class="gallery-year__yr">${y}</span>
-        <span class="gallery-year__label">${label}</span>
-      </button>`;
-    })
-    .join('');
+  // ---- Load gallery data from the folder-generated manifest ----
+  fetch('eventsandgallery/gallery.json', { cache: 'no-cache' })
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .catch(() => window.GALLERY_DATA || {})
+    .then((d) => { data = d || {}; buildYears(); });
+
+  // ---- Build year cards (always show full 2018..2026 range) ----
+  function buildYears() {
+    const years = [];
+    for (let y = YEAR_MIN; y <= YEAR_MAX; y++) years.push(String(y));
+    Object.keys(data).forEach((y) => { if (!years.includes(y)) years.push(y); });
+    years.sort();
+    yearsWrap.innerHTML = years
+      .map((y) => {
+        const albums = data[y] || [];
+        const isUpcoming = y === UPCOMING_YEAR && albums.length === 0;
+        const cls = isUpcoming ? 'gallery-year gallery-year--upcoming' : 'gallery-year';
+        const label = isUpcoming
+          ? 'Coming this June'
+          : albums.length
+          ? albums.length + (albums.length === 1 ? ' album' : ' albums')
+          : 'Photos soon';
+        const soon = !isUpcoming && albums.length === 0 ? ' gallery-year--soon' : '';
+        return `<button type="button" class="${cls}${soon}" data-year="${y}">
+          <span class="gallery-year__yr">${y}</span>
+          <span class="gallery-year__label">${label}</span>
+        </button>`;
+      })
+      .join('');
+  }
 
   // ---- Open / close modal ----
   const openModal = () => { modal.hidden = false; document.body.style.overflow = 'hidden'; };
@@ -75,7 +88,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
         albums
           .map(
             (a, i) => `<button type="button" class="galbum" data-album="${i}">
-              <span class="galbum__img" style="background-image:url('${a.cover || (a.photos && a.photos[0]) || ''}')"></span>
+              <span class="galbum__img" style="background-image:url('${encodeURI(a.cover || (a.photos && a.photos[0]) || '')}')"></span>
               <span class="galbum__title">${a.title}</span>
               <span class="galbum__count">${(a.photos || []).length} photo${(a.photos || []).length === 1 ? '' : 's'}</span>
             </button>`
@@ -101,7 +114,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       currentPhotos
         .map(
           (p, i) =>
-            `<button type="button" class="gphoto" data-photo="${i}"><img src="${p}" alt="${album.title} photo ${i + 1}" loading="lazy" /></button>`
+            `<button type="button" class="gphoto" data-photo="${i}"><img src="${encodeURI(p)}" alt="${album.title} photo ${i + 1}" loading="lazy" /></button>`
         )
         .join('') +
       '</div>';
@@ -113,7 +126,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   // ---- Lightbox ----
   function openLightbox(i) {
     currentIndex = (i + currentPhotos.length) % currentPhotos.length;
-    glImg.src = currentPhotos[currentIndex];
+    glImg.src = encodeURI(currentPhotos[currentIndex]);
     lightbox.hidden = false;
   }
   const closeLightbox = () => { lightbox.hidden = true; };
