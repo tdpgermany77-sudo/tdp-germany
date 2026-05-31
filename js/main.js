@@ -9,6 +9,131 @@ nav?.querySelectorAll('a').forEach((a) =>
 // ===== Current year =====
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// ===== Event Gallery (year -> albums -> photos) =====
+(function gallery() {
+  const data = window.GALLERY_DATA || {};
+  const yearsWrap = document.getElementById('galleryYears');
+  const modal = document.getElementById('galleryModal');
+  if (!yearsWrap || !modal) return;
+
+  const UPCOMING_YEAR = '2026';
+  const gmTitle = document.getElementById('gmTitle');
+  const gmBody = document.getElementById('gmBody');
+  const gmBack = document.getElementById('gmBack');
+  const lightbox = document.getElementById('galleryLightbox');
+  const glImg = document.getElementById('glImg');
+
+  let currentPhotos = [];
+  let currentIndex = 0;
+  let currentYear = null;
+
+  // ---- Build year cards ----
+  const years = Object.keys(data).sort(); // 2018 -> 2026
+  yearsWrap.innerHTML = years
+    .map((y) => {
+      const albums = data[y] || [];
+      const isUpcoming = y === UPCOMING_YEAR && albums.length === 0;
+      const cls = isUpcoming ? 'gallery-year gallery-year--upcoming' : 'gallery-year';
+      const label = isUpcoming
+        ? 'Coming this June'
+        : albums.length
+        ? albums.length + (albums.length === 1 ? ' album' : ' albums')
+        : 'Photos soon';
+      const soon = !isUpcoming && albums.length === 0 ? ' gallery-year--soon' : '';
+      return `<button type="button" class="${cls}${soon}" data-year="${y}">
+        <span class="gallery-year__yr">${y}</span>
+        <span class="gallery-year__label">${label}</span>
+      </button>`;
+    })
+    .join('');
+
+  // ---- Open / close modal ----
+  const openModal = () => { modal.hidden = false; document.body.style.overflow = 'hidden'; };
+  const closeModal = () => { modal.hidden = true; document.body.style.overflow = ''; };
+
+  yearsWrap.addEventListener('click', (e) => {
+    const card = e.target.closest('[data-year]');
+    if (card) showYear(card.dataset.year);
+  });
+
+  modal.querySelectorAll('[data-gclose]').forEach((el) =>
+    el.addEventListener('click', closeModal)
+  );
+  gmBack.addEventListener('click', () => showYear(currentYear));
+
+  // ---- Year view: list albums ----
+  function showYear(year) {
+    currentYear = year;
+    const albums = data[year] || [];
+    gmTitle.textContent = year + ' — Events';
+    gmBack.hidden = true;
+    if (!albums.length) {
+      gmBody.innerHTML = `<p class="gmodal__empty">Albums for ${year} are coming soon. 📸</p>`;
+    } else {
+      gmBody.innerHTML =
+        '<div class="galbums">' +
+        albums
+          .map(
+            (a, i) => `<button type="button" class="galbum" data-album="${i}">
+              <span class="galbum__img" style="background-image:url('${a.cover || (a.photos && a.photos[0]) || ''}')"></span>
+              <span class="galbum__title">${a.title}</span>
+              <span class="galbum__count">${(a.photos || []).length} photo${(a.photos || []).length === 1 ? '' : 's'}</span>
+            </button>`
+          )
+          .join('') +
+        '</div>';
+      gmBody.querySelectorAll('[data-album]').forEach((b) =>
+        b.addEventListener('click', () => showAlbum(year, +b.dataset.album))
+      );
+    }
+    openModal();
+  }
+
+  // ---- Album view: photo grid ----
+  function showAlbum(year, idx) {
+    const album = (data[year] || [])[idx];
+    if (!album) return;
+    currentPhotos = album.photos || [];
+    gmTitle.textContent = album.title + ' · ' + year;
+    gmBack.hidden = false;
+    gmBody.innerHTML =
+      '<div class="gphotos">' +
+      currentPhotos
+        .map(
+          (p, i) =>
+            `<button type="button" class="gphoto" data-photo="${i}"><img src="${p}" alt="${album.title} photo ${i + 1}" loading="lazy" /></button>`
+        )
+        .join('') +
+      '</div>';
+    gmBody.querySelectorAll('[data-photo]').forEach((b) =>
+      b.addEventListener('click', () => openLightbox(+b.dataset.photo))
+    );
+  }
+
+  // ---- Lightbox ----
+  function openLightbox(i) {
+    currentIndex = (i + currentPhotos.length) % currentPhotos.length;
+    glImg.src = currentPhotos[currentIndex];
+    lightbox.hidden = false;
+  }
+  const closeLightbox = () => { lightbox.hidden = true; };
+  document.getElementById('glClose').addEventListener('click', closeLightbox);
+  document.getElementById('glPrev').addEventListener('click', () => openLightbox(currentIndex - 1));
+  document.getElementById('glNext').addEventListener('click', () => openLightbox(currentIndex + 1));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+  // ---- Keyboard ----
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.hidden) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') openLightbox(currentIndex - 1);
+      if (e.key === 'ArrowRight') openLightbox(currentIndex + 1);
+    } else if (!modal.hidden && e.key === 'Escape') {
+      closeModal();
+    }
+  });
+})();
+
 // ===== Scroll reveal =====
 const revealTargets = document.querySelectorAll(
   '.about, .leader, .member, .card, .event, .feature-event, .gallery-year, .stat, .join__inner, .section__head'

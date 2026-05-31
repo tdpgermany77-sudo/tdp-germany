@@ -321,21 +321,32 @@
       <div class="section__head">
         <span class="eyebrow eyebrow--red">Through the Years</span>
         <h2>Event Gallery</h2>
-        <p>Memories from our Mini Mahanadu celebrations. Photo albums coming soon.</p>
+        <p>Our journey through the years — Mini Mahanadu, leaders' birthday celebrations, Davos, community events and more. Pick a year to explore.</p>
       </div>
-      <div class="gallery-years">
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2018</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2019</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2020</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2021</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2022</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2023</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2024</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--soon"><span class="gallery-year__yr">2025</span><span class="gallery-year__label">Mini Mahanadu</span></a>
-        <a class="gallery-year gallery-year--upcoming"><span class="gallery-year__yr">2026</span><span class="gallery-year__label">Coming this June</span></a>
-      </div>
+      <div class="gallery-years" id="galleryYears"><!-- year cards injected by JS --></div>
     </div>
   </section>
+
+  <!-- ===== Gallery Modal ===== -->
+  <div class="gmodal" id="galleryModal" hidden>
+    <div class="gmodal__backdrop" data-gclose></div>
+    <div class="gmodal__panel" role="dialog" aria-modal="true" aria-label="Event gallery">
+      <div class="gmodal__head">
+        <button class="gmodal__back" id="gmBack" hidden>← Back</button>
+        <h3 class="gmodal__title" id="gmTitle">Gallery</h3>
+        <button class="gmodal__close" id="gmClose" data-gclose aria-label="Close">×</button>
+      </div>
+      <div class="gmodal__body" id="gmBody"><!-- albums / photos injected --></div>
+    </div>
+  </div>
+
+  <!-- ===== Lightbox (single photo) ===== -->
+  <div class="glightbox" id="galleryLightbox" hidden>
+    <button class="glightbox__close" id="glClose" aria-label="Close">×</button>
+    <button class="glightbox__nav glightbox__nav--prev" id="glPrev" aria-label="Previous">‹</button>
+    <img id="glImg" src="" alt="Gallery photo" />
+    <button class="glightbox__nav glightbox__nav--next" id="glNext" aria-label="Next">›</button>
+  </div>
 
   <!-- ===== Join / CTA ===== -->
   <section class="join" id="join">
@@ -391,6 +402,7 @@
     </div>
   </footer>
 
+  <script src="js/gallery-data.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
