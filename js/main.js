@@ -147,6 +147,63 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
 })();
 
+// ===== News / Press & Mentions =====
+(function news() {
+  var data = window.NEWS_DATA || { leaders: [], press: [] };
+  var leadWrap = document.getElementById('newsLeaders');
+  var pressWrap = document.getElementById('newsPress');
+  if (!leadWrap && !pressWrap) return;
+
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function show(id, on) { var e = document.getElementById(id); if (e) e.style.display = on ? '' : 'none'; }
+
+  var leaders = data.leaders || [];
+  var press = data.press || [];
+
+  // ---- Leader posts ----
+  show('newsLeadersHead', leaders.length);
+  if (leadWrap) {
+    leadWrap.innerHTML = leaders.map(function (p) {
+      var plat = (p.platform || 'post').toLowerCase();
+      var img = p.image
+        ? '<a class="post__img" href="' + esc(p.url) + '" target="_blank" rel="noopener" style="background-image:url(\'' + encodeURI(p.image) + '\')"></a>'
+        : '';
+      return '<article class="post">' + img +
+        '<div class="post__body">' +
+          '<div class="post__top">' +
+            '<span class="post__badge post__badge--' + plat + '">' + esc(plat) + '</span>' +
+            '<span class="post__name">' + esc(p.name) + '</span>' +
+          '</div>' +
+          '<p class="post__text">' + esc(p.text) + '</p>' +
+          '<a class="post__link" href="' + esc(p.url) + '" target="_blank" rel="noopener">View post →</a>' +
+        '</div></article>';
+    }).join('');
+  }
+
+  // ---- Press coverage ----
+  show('newsPressHead', press.length);
+  if (pressWrap) {
+    pressWrap.innerHTML = press.map(function (a) {
+      var initial = esc((a.source || 'N').charAt(0).toUpperCase());
+      var imgEl = a.image
+        ? '<span class="ncard__img" style="background-image:url(\'' + encodeURI(a.image) + '\')"></span>'
+        : '<span class="ncard__img ncard__img--empty">' + initial + '</span>';
+      var meta = esc(a.source || '') + (a.date ? ' · ' + esc(a.date) : '');
+      return '<a class="ncard" href="' + esc(a.url) + '" target="_blank" rel="noopener">' +
+        imgEl +
+        '<span class="ncard__body">' +
+          '<span class="ncard__meta">' + meta + '</span>' +
+          '<span class="ncard__title">' + esc(a.title || '') + '</span>' +
+          '<span class="ncard__cta">Read article →</span>' +
+        '</span></a>';
+    }).join('');
+  }
+
+  show('newsEmpty', !leaders.length && !press.length);
+})();
+
 // ===== Scroll reveal =====
 const revealTargets = document.querySelectorAll(
   '.about, .leader, .member, .card, .event, .feature-event, .gallery-year, .stat, .join__inner, .section__head'
