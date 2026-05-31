@@ -62,7 +62,7 @@ a { text-decoration: none; color: inherit; }
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand__logo { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #e30000; box-shadow: var(--shadow-sm); }
 .brand__text { display: flex; flex-direction: column; line-height: 1.1; }
-.brand__text strong { font-size: 1.15rem; background: var(--grad-gold); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
+.brand__text strong { font-size: 1.15rem; background: linear-gradient(135deg, #F7941E 0%, #C41A12 60%, #8B0000 100%); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
 .brand__text small { color: var(--muted); font-size: .72rem; }
 .nav { display: flex; align-items: center; gap: 26px; }
 .nav a { font-weight: 500; font-size: .95rem; position: relative; }
