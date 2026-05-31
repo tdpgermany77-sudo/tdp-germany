@@ -231,7 +231,7 @@ if (slider) {
 //    Timestamp | Name | Email | City | Phone | Profession
 // 2. Extensions ▸ Apps Script, paste the doPost() code from README, Deploy ▸ Web app
 //    (Execute as: Me, Access: Anyone), copy the /exec URL and paste it below.
-const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzdzGMdExSn5aVE2yR6gdHx2WlGjOIUWpokLgMjzG9MZI76lx8XOIjKsPxzLuv8hQ5mdA/exec';
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxRgIPTqXEGA6SQQdJgwf3W5ONtFFX8QvhMZxbetBir6WcnN9_XxPbRp6gRZ6eIlxc-fA/exec';
 
 const form = document.getElementById('memberForm');
 const note = document.getElementById('formNote');
