@@ -7,87 +7,156 @@
   <link rel="icon" type="image/webp" href="logos/tdp-germany-logo.webp" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Tiro+Telugu&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@400;600;700&family=Tiro+Telugu&display=swap" rel="stylesheet" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --gold:#FDB813; --orange:#F36F21; --red:#E2231A; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
     body {
-      font-family: 'Poppins', system-ui, sans-serif;
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      text-align: center; color: #fff; overflow: hidden; position: relative;
-      background: linear-gradient(135deg, #FDB813 0%, #F7941E 50%, #F36F21 100%);
+      font-family:'Poppins',system-ui,sans-serif; color:#fff; overflow:hidden;
+      background:#05060e; position:relative;
+      display:flex; align-items:center; justify-content:center; text-align:center;
     }
-    /* soft moving glow */
-    body::before {
-      content: ''; position: absolute; inset: -20%;
-      background: radial-gradient(40% 50% at 50% 30%, rgba(255,255,255,.35), transparent 70%);
-      animation: pulseBg 4s ease-in-out infinite;
+    /* deep space glows */
+    .bg {
+      position:fixed; inset:0; z-index:0;
+      background:
+        radial-gradient(50% 50% at 50% 38%, rgba(253,184,19,.18), transparent 70%),
+        radial-gradient(60% 60% at 50% 120%, rgba(226,35,26,.22), transparent 70%),
+        radial-gradient(40% 40% at 80% 10%, rgba(243,111,33,.15), transparent 70%),
+        #05060e;
     }
-    @keyframes pulseBg { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
-    .launch { position: relative; z-index: 1; padding: 24px; }
-    .launch__logo {
-      width: 150px; height: 150px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 22px;
-      box-shadow: 0 0 0 5px rgba(255,255,255,.7), 0 0 50px 12px rgba(255,255,255,.55);
-      animation: floaty 3s ease-in-out infinite;
+    /* perspective grid floor */
+    .grid {
+      position:fixed; left:50%; bottom:-10%; width:240%; height:55%; z-index:0;
+      transform:translateX(-50%) perspective(420px) rotateX(68deg);
+      background-image:
+        linear-gradient(rgba(253,184,19,.25) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(253,184,19,.18) 1px, transparent 1px);
+      background-size:44px 44px;
+      mask-image:linear-gradient(to top, #000 0%, transparent 80%);
+      -webkit-mask-image:linear-gradient(to top, #000 0%, transparent 80%);
+      animation:gridMove 2.4s linear infinite; opacity:.6;
     }
-    @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    .launch h1 {
-      font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800; line-height: 1.05;
-      text-shadow: 0 4px 18px rgba(0,0,0,.2);
+    @keyframes gridMove { to { background-position:0 44px, 44px 0; } }
+    canvas#stars { position:fixed; inset:0; z-index:0; }
+
+    .wrap { position:relative; z-index:2; padding:24px; }
+    .logo {
+      width:120px; height:120px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 26px;
+      box-shadow:0 0 0 2px rgba(253,184,19,.6), 0 0 40px 6px rgba(253,184,19,.45);
+      animation:floaty 3.5s ease-in-out infinite;
     }
-    .launch h1 span { color: #8B0000; }
-    .launch__telugu { font-family: 'Tiro Telugu', serif; font-size: 1.3rem; margin: 8px 0 4px; }
-    .launch__hint { font-weight: 500; opacity: .95; letter-spacing: 3px; text-transform: uppercase; font-size: .8rem; margin-top: 28px; }
-    .count {
-      margin: 14px auto 0; width: clamp(120px, 34vw, 180px); height: clamp(120px, 34vw, 180px);
-      display: grid; place-items: center; border-radius: 50%;
-      background: rgba(255,255,255,.18); border: 3px solid rgba(255,255,255,.6);
-      font-size: clamp(3.5rem, 12vw, 6rem); font-weight: 800; color: #fff;
-      text-shadow: 0 4px 16px rgba(0,0,0,.25);
+    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .eyebrow {
+      font-family:'Orbitron',sans-serif; letter-spacing:6px; font-size:.72rem; font-weight:700;
+      color:var(--gold); text-transform:uppercase; opacity:.85; margin-bottom:10px;
     }
-    .count.pop { animation: pop .5s ease; }
-    @keyframes pop { 0% { transform: scale(.6); opacity: .2; } 55% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); } }
+    h1 {
+      font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(1.8rem,5.4vw,3rem);
+      line-height:1.05; letter-spacing:2px;
+      text-shadow:0 0 18px rgba(253,184,19,.45);
+    }
+    h1 span { color:var(--red); text-shadow:0 0 18px rgba(226,35,26,.6); }
+    .telugu { font-family:'Tiro Telugu',serif; font-size:1.2rem; margin-top:8px; color:#ffe9c2; }
+
+    /* countdown ring */
+    .ring { position:relative; width:min(280px,72vw); aspect-ratio:1; margin:30px auto 6px; }
+    .ring svg { width:100%; height:100%; transform:rotate(-90deg); filter:drop-shadow(0 0 10px rgba(253,184,19,.55)); }
+    .ring__track { fill:none; stroke:rgba(255,255,255,.08); stroke-width:6; }
+    .ring__bar {
+      fill:none; stroke:url(#grad); stroke-width:6; stroke-linecap:round;
+      stroke-dasharray:565.48; stroke-dashoffset:0;
+      animation:drain 10s linear forwards;
+    }
+    @keyframes drain { to { stroke-dashoffset:565.48; } }
+    .num {
+      position:absolute; inset:0; display:grid; place-items:center;
+      font-family:'Orbitron',sans-serif; font-weight:900; color:#fff;
+      font-size:clamp(4rem,16vw,7rem); text-shadow:0 0 24px rgba(253,184,19,.6);
+    }
+    .num.tick { animation:tick .5s ease; }
+    @keyframes tick { 0%{transform:scale(.55);opacity:.2;filter:blur(4px)} 60%{transform:scale(1.1);opacity:1;filter:blur(0)} 100%{transform:scale(1)} }
+    .hint {
+      font-family:'Orbitron',sans-serif; letter-spacing:5px; text-transform:uppercase;
+      font-size:.72rem; color:#cdd2e6; opacity:.8; margin-top:14px;
+    }
     .skip {
-      position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 2;
-      background: rgba(255,255,255,.9); color: #c41a12; border: none; cursor: pointer;
-      font: inherit; font-weight: 700; padding: 10px 22px; border-radius: 999px;
+      margin-top:30px; background:transparent; color:var(--gold); cursor:pointer;
+      border:1.5px solid rgba(253,184,19,.6); font-family:'Orbitron',sans-serif; font-weight:700;
+      letter-spacing:2px; font-size:.78rem; text-transform:uppercase;
+      padding:12px 26px; border-radius:999px; transition:.25s ease;
     }
+    .skip:hover { background:var(--gold); color:#05060e; box-shadow:0 0 24px rgba(253,184,19,.6); }
     @media (prefers-reduced-motion: reduce) {
-      body::before, .launch__logo, .count.pop { animation: none; }
+      .grid,.logo,.ring__bar,.num.tick { animation:none; }
     }
   </style>
 </head>
 <body>
-  <div class="launch">
-    <img class="launch__logo" src="logos/tdp-germany-logo.webp" alt="TDP Germany logo" />
-    <h1>NRI TDP <span>Germany</span></h1>
-    <p class="launch__telugu">తెలుగుదేశం పార్టీ — జర్మనీ విభాగం</p>
-    <div class="count pop" id="count">10</div>
-    <p class="launch__hint">Launching in…</p>
+  <div class="bg"></div>
+  <div class="grid"></div>
+  <canvas id="stars"></canvas>
+
+  <div class="wrap">
+    <img class="logo" src="logos/tdp-germany-logo.webp" alt="TDP Germany logo" />
+    <div class="eyebrow">System Initializing</div>
+    <h1>NRI TDP <span>GERMANY</span></h1>
+    <p class="telugu">తెలుగుదేశం పార్టీ — జర్మనీ విభాగం</p>
+
+    <div class="ring">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FDB813" />
+            <stop offset="60%" stop-color="#F36F21" />
+            <stop offset="100%" stop-color="#E2231A" />
+          </linearGradient>
+        </defs>
+        <circle class="ring__track" cx="100" cy="100" r="90" />
+        <circle class="ring__bar" cx="100" cy="100" r="90" />
+      </svg>
+      <div class="num tick" id="count">10</div>
+    </div>
+
+    <div class="hint">Launching in…</div>
+    <button class="skip" id="skip" type="button">Enter Now →</button>
   </div>
-  <button class="skip" id="skip" type="button">Enter now →</button>
 
   <script>
+    // ---- drifting particle starfield ----
     (function () {
-      var n = 10;
-      var el = document.getElementById('count');
-      el.textContent = n;
-
-      function go() {
-        try { sessionStorage.setItem('tdpLaunch', '1'); } catch (e) {}
-        window.location.href = 'index.html';
-      }
-
-      var iv = setInterval(function () {
-        n--;
-        if (n <= 0) { clearInterval(iv); go(); return; }
-        el.textContent = n;
-        el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
-      }, 1000);
-
-      document.getElementById('skip').addEventListener('click', function () {
-        clearInterval(iv);
-        go();
+      var c = document.getElementById('stars'), x = c.getContext('2d');
+      var dpr = window.devicePixelRatio || 1, P = [];
+      function size(){ c.width = innerWidth*dpr; c.height = innerHeight*dpr; x.setTransform(dpr,0,0,dpr,0,0); }
+      size(); addEventListener('resize', size);
+      var COLORS = ['rgba(253,184,19,', 'rgba(243,111,33,', 'rgba(255,255,255,'];
+      for (var i=0;i<90;i++) P.push({
+        x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+        r:Math.random()*2+0.4, s:Math.random()*0.5+0.15,
+        a:Math.random()*0.6+0.2, c:COLORS[(Math.random()*COLORS.length)|0]
       });
+      (function loop(){
+        x.clearRect(0,0,innerWidth,innerHeight);
+        for (var i=0;i<P.length;i++){ var p=P[i];
+          p.y-=p.s; if(p.y<-5){ p.y=innerHeight+5; p.x=Math.random()*innerWidth; }
+          x.beginPath(); x.fillStyle=p.c+p.a+')'; x.arc(p.x,p.y,p.r,0,7); x.fill();
+        }
+        requestAnimationFrame(loop);
+      })();
+    })();
+
+    // ---- countdown ----
+    (function () {
+      var n = 10, el = document.getElementById('count');
+      function go(){ try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){} window.location.href='index.html'; }
+      var iv = setInterval(function(){
+        n--;
+        if (n<=0){ clearInterval(iv); go(); return; }
+        el.textContent = n;
+        el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick');
+      }, 1000);
+      document.getElementById('skip').addEventListener('click', function(){ clearInterval(iv); go(); });
     })();
   </script>
 </body>
