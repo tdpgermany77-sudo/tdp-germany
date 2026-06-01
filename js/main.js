@@ -162,11 +162,21 @@ document.getElementById('year').textContent = new Date().getFullYear();
   var leaders = data.leaders || [];
   var press = data.press || [];
 
-  // ---- Leader posts ----
+  // ---- Social highlights (embeds + text mentions) ----
   show('newsLeadersHead', leaders.length);
   if (leadWrap) {
+    var needsIG = false;
     leadWrap.innerHTML = leaders.map(function (p) {
       var plat = (p.platform || 'post').toLowerCase();
+      // Embedded Instagram post / reel
+      if (p.embed && plat === 'instagram') {
+        needsIG = true;
+        var u = String(p.url).split('?')[0];
+        return '<div class="post-embed"><blockquote class="instagram-media" ' +
+          'data-instgrm-permalink="' + esc(u) + '?utm_source=ig_embed" data-instgrm-version="14" ' +
+          'style="background:#fff;border:0;border-radius:14px;margin:0 auto;max-width:540px;width:100%"></blockquote></div>';
+      }
+      // Text mention card
       var img = p.image
         ? '<a class="post__img" href="' + esc(p.url) + '" target="_blank" rel="noopener" style="background-image:url(\'' + encodeURI(p.image) + '\')"></a>'
         : '';
@@ -180,6 +190,17 @@ document.getElementById('year').textContent = new Date().getFullYear();
           '<a class="post__link" href="' + esc(p.url) + '" target="_blank" rel="noopener">View post →</a>' +
         '</div></article>';
     }).join('');
+
+    if (needsIG) {
+      if (window.instgrm && window.instgrm.Embeds) {
+        window.instgrm.Embeds.process();
+      } else if (!document.getElementById('ig-embed-js')) {
+        var s = document.createElement('script');
+        s.id = 'ig-embed-js'; s.async = true; s.src = 'https://www.instagram.com/embed.js';
+        s.onload = function () { if (window.instgrm) window.instgrm.Embeds.process(); };
+        document.body.appendChild(s);
+      }
+    }
   }
 
   // ---- Press coverage ----

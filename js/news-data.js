@@ -12,10 +12,12 @@
    ============================================================ */
 
 window.NEWS_DATA = {
-  // ---- Posts from leaders / official handles about us ----
+  // ---- Social highlights (embedded posts/reels + leader mentions) ----
+  // For an Instagram or X post, set embed:true and paste the post URL.
   leaders: [
-    // Example (add real leader posts here):
-    // { name:'Nara Lokesh', platform:'x', text:'Wonderful to meet our NRI TDP Germany family!', url:'https://x.com/...', image:'news-images/your-screenshot.jpg' }
+    { platform: 'instagram', embed: true, url: 'https://www.instagram.com/reel/DTsCqokE6gs/' }
+    // Text mention example:
+    // { name:'Nara Lokesh', platform:'x', text:'Wonderful to meet our NRI TDP Germany family!', url:'https://x.com/...' }
   ],
 
   // ---- Press / media coverage ----

@@ -420,9 +420,10 @@ h2 { line-height: 1.15; }
 .news-subhead h3::after { content: ''; position: absolute; left: 0; bottom: 0; width: 48px; height: 3px; border-radius: 3px; background: var(--grad-red); }
 .news-empty { text-align: center; color: var(--muted); padding: 20px; }
 
-/* Leader posts */
-.posts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-bottom: 44px; }
-.post { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm);
+/* Social highlights */
+.posts { display: flex; flex-wrap: wrap; justify-content: center; gap: 22px; margin-bottom: 44px; }
+.post-embed { flex: 1 1 360px; max-width: 540px; }
+.post { flex: 1 1 360px; max-width: 540px; background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm);
   display: flex; flex-direction: column; transition: transform .2s ease, box-shadow .2s ease; }
 .post:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
 .post__img { display: block; width: 100%; aspect-ratio: 16/9; background: var(--cream) center/cover no-repeat; }
