@@ -99,6 +99,29 @@
     .lname { font-family:'Orbitron',sans-serif; font-weight:700; font-size:clamp(.78rem,2vw,.96rem); margin-top:16px; color:#fff; text-shadow:0 0 12px rgba(253,184,19,.55); }
     .lrole { font-size:.66rem; color:var(--cyan); letter-spacing:1px; margin-top:3px; text-transform:uppercase; opacity:.92; }
 
+    /* ===== Launch button (start) ===== */
+    .start-title { font-family:'Orbitron',sans-serif; font-weight:900; letter-spacing:3px; font-size:clamp(1.5rem,5vw,2.5rem);
+      margin-top:2px; text-shadow:0 0 16px rgba(253,184,19,.45); animation:glow 2.6s ease-in-out infinite; }
+    .start-title span { color:var(--red); }
+    .launch-btn { position:relative; width:210px; height:210px; margin:30px auto 14px; background:none; border:none; cursor:pointer; display:grid; place-items:center; }
+    .launch-btn__ring { position:absolute; width:124px; height:124px; border-radius:50%; border:2px solid rgba(253,184,19,.55); animation:lpulse 2.6s ease-out infinite; }
+    .launch-btn__ring--2 { animation-delay:1.3s; }
+    @keyframes lpulse { 0%{transform:scale(.85);opacity:.85} 80%{opacity:0} 100%{transform:scale(1.85);opacity:0} }
+    .launch-btn__dash { position:absolute; width:188px; height:188px; border-radius:50%; border:1px dashed rgba(56,224,255,.4); animation:spin 16s linear infinite; }
+    .launch-btn__core { position:relative; z-index:2; width:142px; height:142px; border-radius:50%;
+      background:radial-gradient(circle at 50% 32%, #FFD45A, #F36F21 56%, #E2231A);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+      box-shadow:0 0 0 4px rgba(255,255,255,.12), 0 0 48px 10px rgba(243,111,33,.6); transition:transform .25s ease, box-shadow .25s ease; }
+    .launch-btn:hover .launch-btn__core { transform:scale(1.06); box-shadow:0 0 0 6px rgba(255,255,255,.2), 0 0 72px 18px rgba(243,111,33,.85); }
+    .launch-btn:active .launch-btn__core { transform:scale(.95); }
+    .launch-btn__icon { font-size:1.9rem; line-height:1; filter:drop-shadow(0 2px 4px rgba(0,0,0,.3)); }
+    .launch-btn__label { font-family:'Orbitron',sans-serif; font-weight:900; letter-spacing:2px; font-size:1.05rem; color:#2a1400; }
+    .start-hint { font-family:'Orbitron',sans-serif; letter-spacing:4px; text-transform:uppercase; font-size:.66rem; color:#cdd2e6; opacity:.8; margin-top:10px; animation:blink 2s steps(1) infinite; }
+
+    /* gate loader/skip until launched */
+    .loader, .skip-fixed { opacity:0; pointer-events:none; transition:opacity .5s ease; }
+    body.started .loader, body.started .skip-fixed { opacity:1; pointer-events:auto; }
+
     /* ===== Origin (Munich) stage ===== */
     .pin { position:relative; width:150px; height:150px; margin:6px auto 16px; display:grid; place-items:center; }
     .pin__ping { position:absolute; width:46px; height:46px; border-radius:50%; border:2px solid rgba(253,184,19,.55); animation:ping 2.6s ease-out infinite; }
@@ -207,8 +230,26 @@
   </div>
 
   <div id="wrap">
+    <!-- Stage: Launch button -->
+    <section class="stage stage--stack show" id="stageStart">
+      <img class="logo" src="logos/tdp-germany-logo.webp" alt="TDP Germany logo" />
+      <div class="eyebrow">NRI TDP Germany</div>
+      <h1 class="start-title">LAUNCH <span>READY</span></h1>
+      <p class="telugu">తెలుగుదేశం పార్టీ — జర్మనీ విభాగం</p>
+      <button class="launch-btn" id="launchBtn" type="button" aria-label="Launch">
+        <span class="launch-btn__ring"></span>
+        <span class="launch-btn__ring launch-btn__ring--2"></span>
+        <span class="launch-btn__dash"></span>
+        <span class="launch-btn__core">
+          <span class="launch-btn__icon">🚀</span>
+          <span class="launch-btn__label">LAUNCH</span>
+        </span>
+      </button>
+      <p class="start-hint">Press to begin</p>
+    </section>
+
     <!-- Stage 0: Origin / Munich -->
-    <section class="stage stage--stack show" id="stageOrigin">
+    <section class="stage stage--stack" id="stageOrigin">
       <div class="eyebrow">Origin Point</div>
       <div class="pin">
         <span class="pin__ping"></span><span class="pin__ping pin__ping--2"></span>
@@ -351,20 +392,18 @@
       var btn = document.getElementById('audioBtn');
       if (!a) return {};
       a.volume = 0.55;
-      function start(){ var p=a.play(); if(p&&p.catch) p.catch(function(){}); }
-      start();
-      // autoplay often blocked → start on first interaction
-      ['pointerdown','keydown','touchstart'].forEach(function(ev){
-        window.addEventListener(ev, function once(){ if(!a.muted) start(); }, { once:true });
-      });
+      function start(){ if(a.muted) return; var p=a.play(); if(p&&p.catch) p.catch(function(){}); }
       if (btn) btn.addEventListener('click', function(e){
         e.stopPropagation();
         a.muted = !a.muted; btn.textContent = a.muted ? '🔇' : '🔊';
         if (!a.muted) start();
       });
-      return { fadeOut:function(){
-        var t=setInterval(function(){ a.volume=Math.max(0,a.volume-0.07); if(a.volume<=0){ clearInterval(t); a.pause(); } },60);
-      }};
+      return {
+        start: start,
+        fadeOut: function(){
+          var t=setInterval(function(){ a.volume=Math.max(0,a.volume-0.07); if(a.volume<=0){ clearInterval(t); a.pause(); } },60);
+        }
+      };
     })();
 
     // ===== Sequence: origin -> leaders -> countdown -> launch =====
@@ -373,6 +412,7 @@
       var LEADERS_MS = 4800;   // leaders showcase
       var START_COUNT = 10;    // countdown start
 
+      var startEl   = document.getElementById('stageStart');
       var originEl  = document.getElementById('stageOrigin');
       var leadersEl = document.getElementById('stageLeaders');
       var countEl   = document.getElementById('stageCount');
@@ -381,20 +421,7 @@
       var hint      = document.getElementById('hint');
       var fill      = document.getElementById('ldfill'), pct=document.getElementById('ldpct'), ldl=document.getElementById('ldlabel');
       var CIRC = 565.48;
-      var done = false, iv = null;
-
-      ldl.textContent = 'LOCATING ORIGIN';
-      scramble(document.querySelector('.city'), 'MÜNCHEN', 1100);
-      scramble(document.querySelector('.coords'), '48.1351° N · 11.5820° E — Germany', 1400);
-
-      // single loader progress across the whole sequence
-      var seqStart = performance.now();
-      var TOTAL = ORIGIN_MS + LEADERS_MS + START_COUNT * 1000;
-      (function prog(){ if(done) return;
-        var p = Math.min(100, (performance.now()-seqStart)/TOTAL*100);
-        fill.style.width = p+'%'; pct.textContent = Math.round(p)+'%';
-        if (p < 100) requestAnimationFrame(prog);
-      })();
+      var done = false, started = false, iv = null;
 
       function swap(fromEl, toEl){ fromEl.classList.add('hide'); fromEl.classList.remove('show'); toEl.classList.add('show'); }
 
@@ -412,6 +439,7 @@
 
       function showLeaders(){
         if(done) return;
+        if (TDP_BGM && TDP_BGM.start) TDP_BGM.start();   // music begins as the leaders appear
         swap(originEl, leadersEl);
         ldl.textContent = 'ACCESSING ARCHIVE';
         // restart leader card entrance animations now that they're visible
@@ -442,9 +470,29 @@
         }, 1000);
       }
 
-      setTimeout(showLeaders, ORIGIN_MS);
-      setTimeout(startCountdown, ORIGIN_MS + LEADERS_MS);
-      function skip(){ if(!done) go(); }
+      // Begins only when the LAUNCH button is pressed (guarantees music too)
+      function begin(){
+        if (started) return; started = true;
+        document.body.classList.add('started');
+        swap(startEl, originEl);
+        ldl.textContent = 'LOCATING ORIGIN';
+        scramble(document.querySelector('.city'), 'MÜNCHEN', 1100);
+        scramble(document.querySelector('.coords'), '48.1351° N · 11.5820° E — Germany', 1400);
+
+        var seqStart = performance.now();
+        var TOTAL = ORIGIN_MS + LEADERS_MS + START_COUNT * 1000;
+        (function prog(){ if(done) return;
+          var p = Math.min(100, (performance.now()-seqStart)/TOTAL*100);
+          fill.style.width = p+'%'; pct.textContent = Math.round(p)+'%';
+          if (p < 100) requestAnimationFrame(prog);
+        })();
+
+        setTimeout(showLeaders, ORIGIN_MS);
+        setTimeout(startCountdown, ORIGIN_MS + LEADERS_MS);
+      }
+
+      document.getElementById('launchBtn').addEventListener('click', begin);
+      function skip(){ if(!started){ begin(); return; } if(!done) go(); }
       document.getElementById('skip').addEventListener('click', skip);
       var sf = document.getElementById('skipFixed'); if (sf) sf.addEventListener('click', skip);
     })();
