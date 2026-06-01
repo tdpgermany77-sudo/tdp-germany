@@ -15,9 +15,9 @@ window.NEWS_DATA = {
   // ---- Social highlights (embedded posts/reels + leader mentions) ----
   // For an Instagram or X post, set embed:true and paste the post URL.
   leaders: [
-    { platform: 'instagram', embed: true, url: 'https://www.instagram.com/reel/DTsCqokE6gs/' }
-    // Text mention example:
-    // { name:'Nara Lokesh', platform:'x', text:'Wonderful to meet our NRI TDP Germany family!', url:'https://x.com/...' }
+    { platform: 'x', embed: true, url: 'https://x.com/ncbn/status/2013163699750699080' },
+    { platform: 'instagram', embed: true, url: 'https://www.instagram.com/reel/DTsCqokE6gs/' },
+    { platform: 'instagram', embed: true, url: 'https://www.instagram.com/reel/DTsAI6zkZF_/' }
   ],
 
   // ---- Press / media coverage ----
@@ -42,6 +42,13 @@ window.NEWS_DATA = {
       date: 'May 2023',
       url: 'https://www.gulte.com/overseas/242755/ntr-centenary-celebrations-in-germany',
       image: 'news-images/gulte-ntr-centenary.webp'
+    },
+    {
+      title: 'జ్యూరిక్‌లో మంత్రి నారా లోకేశ్‌కు ప్రవాసాంధ్రుల ఘనస్వాగతం',
+      source: 'Eenadu',
+      date: 'Jan 2026',
+      url: 'https://www.eenadu.net/telugu-news/nri/ap-minister-nara-lokesh-received-a-grand-welcome-from-nris/1101/126011146',
+      image: 'news-images/eenadu-lokesh-zurich.webp'
     }
   ]
 };

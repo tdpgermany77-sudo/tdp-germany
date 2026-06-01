@@ -165,7 +165,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   // ---- Social highlights (embeds + text mentions) ----
   show('newsLeadersHead', leaders.length);
   if (leadWrap) {
-    var needsIG = false;
+    var needsIG = false, needsTW = false;
     leadWrap.innerHTML = leaders.map(function (p) {
       var plat = (p.platform || 'post').toLowerCase();
       // Embedded Instagram post / reel
@@ -175,6 +175,12 @@ document.getElementById('year').textContent = new Date().getFullYear();
         return '<div class="post-embed"><blockquote class="instagram-media" ' +
           'data-instgrm-permalink="' + esc(u) + '?utm_source=ig_embed" data-instgrm-version="14" ' +
           'style="background:#fff;border:0;border-radius:14px;margin:0 auto;max-width:540px;width:100%"></blockquote></div>';
+      }
+      // Embedded X / Twitter post
+      if (p.embed && (plat === 'x' || plat === 'twitter')) {
+        needsTW = true;
+        return '<div class="post-embed post-embed--x"><blockquote class="twitter-tweet" data-dnt="true">' +
+          '<a href="' + esc(p.url) + '"></a></blockquote></div>';
       }
       // Text mention card
       var img = p.image
@@ -199,6 +205,16 @@ document.getElementById('year').textContent = new Date().getFullYear();
         s.id = 'ig-embed-js'; s.async = true; s.src = 'https://www.instagram.com/embed.js';
         s.onload = function () { if (window.instgrm) window.instgrm.Embeds.process(); };
         document.body.appendChild(s);
+      }
+    }
+    if (needsTW) {
+      if (window.twttr && window.twttr.widgets) {
+        window.twttr.widgets.load(leadWrap);
+      } else if (!document.getElementById('tw-embed-js')) {
+        var tw = document.createElement('script');
+        tw.id = 'tw-embed-js'; tw.async = true; tw.src = 'https://platform.twitter.com/widgets.js';
+        tw.onload = function () { if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(leadWrap); };
+        document.body.appendChild(tw);
       }
     }
   }
