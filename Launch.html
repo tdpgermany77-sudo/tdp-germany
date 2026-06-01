@@ -405,8 +405,9 @@
         try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}
         document.body.classList.remove('shake');
         document.body.classList.add('launching');
-        if (TDP_BGM && TDP_BGM.fadeOut) TDP_BGM.fadeOut();
-        setTimeout(function(){ window.location.href='index.html'; }, 1300);
+        // hold the స్వాగతం / Welcome frame ~4s, music plays then fades at the end
+        setTimeout(function(){ if (TDP_BGM && TDP_BGM.fadeOut) TDP_BGM.fadeOut(); }, 3300);
+        setTimeout(function(){ window.location.href='index.html'; }, 4000);
       }
 
       function showLeaders(){
