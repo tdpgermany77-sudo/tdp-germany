@@ -99,6 +99,20 @@
     .lname { font-family:'Orbitron',sans-serif; font-weight:700; font-size:clamp(.78rem,2vw,.96rem); margin-top:16px; color:#fff; text-shadow:0 0 12px rgba(253,184,19,.55); }
     .lrole { font-size:.66rem; color:var(--cyan); letter-spacing:1px; margin-top:3px; text-transform:uppercase; opacity:.92; }
 
+    /* ===== Origin (Munich) stage ===== */
+    .pin { position:relative; width:150px; height:150px; margin:6px auto 16px; display:grid; place-items:center; }
+    .pin__ping { position:absolute; width:46px; height:46px; border-radius:50%; border:2px solid rgba(253,184,19,.55); animation:ping 2.6s ease-out infinite; }
+    .pin__ping--2 { animation-delay:1.3s; }
+    @keyframes ping { 0%{transform:scale(.35);opacity:.9} 80%{opacity:0} 100%{transform:scale(3.6);opacity:0} }
+    .pin__icon { width:60px; height:60px; position:relative; z-index:2; filter:drop-shadow(0 6px 14px rgba(253,184,19,.55)); animation:floaty 3.2s ease-in-out infinite; }
+    .city { font-family:'Orbitron',sans-serif; font-weight:900; letter-spacing:6px; font-size:clamp(2rem,6vw,3.4rem); line-height:1.05;
+      text-shadow:0 0 18px rgba(253,184,19,.5), 2px 0 rgba(56,224,255,.22), -2px 0 rgba(226,35,26,.22); animation:glow 2.6s ease-in-out infinite; }
+    .coords { font-family:'Orbitron',sans-serif; letter-spacing:2px; font-size:clamp(.62rem,1.8vw,.78rem); color:var(--cyan); opacity:.85; margin-top:10px; }
+    .origin-text { font-size:clamp(1.05rem,3vw,1.5rem); font-weight:600; margin-top:26px; }
+    .origin-text b { color:var(--gold); }
+    .origin-sub { font-size:clamp(.9rem,2.4vw,1.1rem); color:#cdd2e6; opacity:.9; margin-top:8px; animation:fadeUp 1s ease 1.1s both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:.9;transform:none} }
+
     /* ===== Countdown stage ===== */
     .logo { width:110px; height:110px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 18px;
       box-shadow:0 0 0 2px rgba(253,184,19,.6), 0 0 40px 6px rgba(253,184,19,.45); animation:floaty 3.5s ease-in-out infinite; }
@@ -132,6 +146,10 @@
       font-family:'Orbitron',sans-serif; font-weight:700; letter-spacing:2px; font-size:.78rem; text-transform:uppercase; padding:12px 26px; border-radius:999px; transition:.25s ease; pointer-events:auto; }
     .skip:hover { background:var(--gold); color:#04050c; box-shadow:0 0 26px rgba(253,184,19,.65); transform:translateY(-2px); }
 
+    .skip-fixed { position:fixed; bottom:74px; right:20px; z-index:5; background:rgba(255,255,255,.08);
+      color:#cdd2e6; border:1px solid rgba(253,184,19,.45); font-family:'Orbitron',sans-serif; font-size:.6rem;
+      letter-spacing:1px; text-transform:uppercase; padding:8px 14px; border-radius:999px; cursor:pointer; transition:.2s ease; }
+    .skip-fixed:hover { background:var(--gold); color:#04050c; }
     .loader { position:fixed; left:50%; bottom:30px; transform:translateX(-50%); z-index:3; width:min(440px,82vw); }
     .loader__row { display:flex; justify-content:space-between; font-family:'Orbitron',sans-serif; font-size:.6rem; letter-spacing:2px; color:#cdd2e6; opacity:.85; margin-bottom:6px; }
     .loader__bar { height:3px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
@@ -164,8 +182,26 @@
   </div>
 
   <div id="wrap">
+    <!-- Stage 0: Origin / Munich -->
+    <section class="stage stage--stack show" id="stageOrigin">
+      <div class="eyebrow">Origin Point</div>
+      <div class="pin">
+        <span class="pin__ping"></span><span class="pin__ping pin__ping--2"></span>
+        <svg class="pin__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="url(#pinGrad)" d="M12 2C7.86 2 4.5 5.36 4.5 9.5c0 5.36 7.5 12.5 7.5 12.5s7.5-7.14 7.5-12.5C19.5 5.36 16.14 2 12 2z"/>
+          <circle cx="12" cy="9.5" r="2.8" fill="#04050c"/>
+          <defs><linearGradient id="pinGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FDB813"/><stop offset="100%" stop-color="#F36F21"/></linearGradient></defs>
+        </svg>
+      </div>
+      <h1 class="city">MÜNCHEN</h1>
+      <div class="coords">48.1351° N · 11.5820° E — Germany</div>
+      <p class="origin-text">Where <b>NRI TDP Germany</b> began.</p>
+      <p class="origin-sub">Now, we're happy to take the next step forward.</p>
+    </section>
+
     <!-- Stage 1: Leaders -->
-    <section class="stage stage--stack show" id="stageLeaders">
+    <section class="stage stage--stack" id="stageLeaders">
       <div class="intro-title">The Vision That <b>Guides Us</b></div>
       <div class="intro-sub">మన నాయకుల స్ఫూర్తితో</div>
       <div class="intro-line"></div>
@@ -213,8 +249,10 @@
     </section>
   </div>
 
+  <button class="skip-fixed" id="skipFixed" type="button">Skip intro →</button>
+
   <div class="loader">
-    <div class="loader__row"><span id="ldlabel">ACCESSING LEADERSHIP ARCHIVE</span><span id="ldpct">0%</span></div>
+    <div class="loader__row"><span id="ldlabel">LOCATING ORIGIN</span><span id="ldpct">0%</span></div>
     <div class="loader__bar"><div class="loader__fill" id="ldfill"></div></div>
   </div>
 
@@ -239,10 +277,13 @@
       addEventListener('mousemove', function(e){ var dx=e.clientX/innerWidth-.5, dy=e.clientY/innerHeight-.5;
         w.style.transform='translate('+(dx*-12)+'px,'+(dy*-8)+'px)'; }); })();
 
-    // ===== Sequence: leaders -> countdown -> launch =====
+    // ===== Sequence: origin -> leaders -> countdown -> launch =====
     (function () {
-      var LEADERS_MS = 5200;      // how long the leaders showcase stays
-      var START_COUNT = 10;       // countdown start
+      var ORIGIN_MS  = 4200;   // Munich origin screen
+      var LEADERS_MS = 4800;   // leaders showcase
+      var START_COUNT = 10;    // countdown start
+
+      var originEl  = document.getElementById('stageOrigin');
       var leadersEl = document.getElementById('stageLeaders');
       var countEl   = document.getElementById('stageCount');
       var numEl     = document.getElementById('count');
@@ -252,14 +293,18 @@
       var CIRC = 565.48;
       var done = false, iv = null;
 
-      // loader sweeps during leaders phase
-      var t0 = performance.now();
-      (function leaderProg(){
-        if (done) return;
-        var p = Math.min(40, (performance.now()-t0)/LEADERS_MS*40);
+      ldl.textContent = 'LOCATING ORIGIN';
+
+      // single loader progress across the whole sequence
+      var seqStart = performance.now();
+      var TOTAL = ORIGIN_MS + LEADERS_MS + START_COUNT * 1000;
+      (function prog(){ if(done) return;
+        var p = Math.min(100, (performance.now()-seqStart)/TOTAL*100);
         fill.style.width = p+'%'; pct.textContent = Math.round(p)+'%';
-        if (p < 40) requestAnimationFrame(leaderProg);
+        if (p < 100) requestAnimationFrame(prog);
       })();
+
+      function swap(fromEl, toEl){ fromEl.classList.add('hide'); fromEl.classList.remove('show'); toEl.classList.add('show'); }
 
       function go(){
         done = true; if(iv) clearInterval(iv);
@@ -269,15 +314,21 @@
         setTimeout(function(){ window.location.href='index.html'; }, 650);
       }
 
-      function startCountdown(){
-        leadersEl.classList.add('hide'); leadersEl.classList.remove('show');
-        countEl.classList.add('show');
-        ldl.textContent = 'LAUNCH SEQUENCE';
-        numEl.style.transformOrigin='center';
+      function showLeaders(){
+        if(done) return;
+        swap(originEl, leadersEl);
+        ldl.textContent = 'ACCESSING ARCHIVE';
+        // restart leader card entrance animations now that they're visible
+        leadersEl.querySelectorAll('.lcard').forEach(function(c){ c.style.animation='none'; void c.offsetWidth; c.style.animation=''; });
+      }
 
-        var n = START_COUNT, total = START_COUNT * 1000, cdStart = performance.now();
+      function startCountdown(){
+        if(done) return;
+        swap(leadersEl, countEl);
+        ldl.textContent = 'LAUNCH SEQUENCE';
+
+        var n = START_COUNT, total = START_COUNT * 1000;
         numEl.textContent = n; numEl.classList.add('tick');
-        // animate ring drain over countdown duration
         bar.style.transition = 'stroke-dashoffset ' + total + 'ms linear';
         requestAnimationFrame(function(){ bar.style.strokeDashoffset = CIRC; });
 
@@ -286,12 +337,6 @@
           setTimeout(function(){ hint.textContent=STATUS[i]; hint.style.opacity=.85; },150); }
         setHint();
 
-        (function cdProg(){ if(done) return;
-          var p = 40 + Math.min(60,(performance.now()-cdStart)/total*60);
-          fill.style.width=p+'%'; pct.textContent=Math.round(p)+'%';
-          if(p<100) requestAnimationFrame(cdProg);
-        })();
-
         iv = setInterval(function(){
           n--;
           if(n<=0){ clearInterval(iv); go(); return; }
@@ -299,8 +344,11 @@
         }, 1000);
       }
 
-      setTimeout(startCountdown, LEADERS_MS);
-      document.getElementById('skip').addEventListener('click', function(){ if(!done) go(); });
+      setTimeout(showLeaders, ORIGIN_MS);
+      setTimeout(startCountdown, ORIGIN_MS + LEADERS_MS);
+      function skip(){ if(!done) go(); }
+      document.getElementById('skip').addEventListener('click', skip);
+      var sf = document.getElementById('skipFixed'); if (sf) sf.addEventListener('click', skip);
     })();
   </script>
   <div class="scan"></div>
