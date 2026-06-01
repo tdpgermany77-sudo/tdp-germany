@@ -7,7 +7,7 @@
   <link rel="icon" type="image/webp" href="logos/tdp-germany-logo.webp" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@400;600;700&family=Tiro+Telugu&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@400;600;700&family=Ramabhadra&family=Tiro+Telugu&display=swap" rel="stylesheet" />
   <style>
     :root { --gold:#FDB813; --orange:#F36F21; --red:#E2231A; --cyan:#38e0ff; }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -155,11 +155,36 @@
     .loader__bar { height:3px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
     .loader__fill { height:100%; width:0%; background:linear-gradient(90deg,var(--gold),var(--orange),var(--red)); box-shadow:0 0 12px rgba(253,184,19,.8); transition:width .2s linear; }
 
-    .flash { position:fixed; inset:0; z-index:6; pointer-events:none; opacity:0; background:radial-gradient(circle at 50% 60%, #fff, var(--gold) 40%, var(--red) 90%); }
-    body.launching .flash { animation:flash .7s ease forwards; }
-    body.launching #wrap { animation:warp .7s ease forwards; }
-    @keyframes flash { 0%{opacity:0} 100%{opacity:1} }
-    @keyframes warp { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.5);opacity:0;filter:blur(8px)} }
+    .flash { position:fixed; inset:0; z-index:6; pointer-events:none; opacity:0; background:radial-gradient(circle at 50% 55%, #fff, var(--gold) 38%, var(--red) 92%); }
+    body.launching .flash { animation:flash .9s ease forwards; }
+    body.launching #wrap { animation:warp .9s ease forwards; }
+    @keyframes flash { 0%{opacity:0} 45%{opacity:.95} 100%{opacity:0} }
+    @keyframes warp { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.6);opacity:0;filter:blur(10px)} }
+
+    /* dramatic final countdown */
+    .num.final { color:var(--red) !important; text-shadow:0 0 46px rgba(226,35,26,.95), 0 0 80px rgba(226,35,26,.5) !important; }
+    body.shake { animation:shake .42s cubic-bezier(.36,.07,.19,.97); }
+    @keyframes shake {
+      10%{transform:translate(-3px,2px)} 30%{transform:translate(4px,-2px)} 50%{transform:translate(-4px,1px)}
+      70%{transform:translate(3px,2px)} 90%{transform:translate(-2px,-1px)} 100%{transform:none}
+    }
+
+    /* welcome reveal at launch */
+    .launch-word { position:fixed; inset:0; z-index:7; display:grid; place-items:center; text-align:center; pointer-events:none; opacity:0; }
+    .launch-word__te { font-family:'Ramabhadra',sans-serif; font-weight:400; font-size:clamp(3.4rem,14vw,8rem); color:#fff;
+      text-shadow:0 0 36px rgba(253,184,19,.9), 0 0 80px rgba(226,35,26,.5); line-height:1.1; letter-spacing:1px; }
+    .launch-word__div { display:block; width:clamp(120px,30vw,220px); height:2px; margin:30px auto;
+      background:linear-gradient(90deg,transparent,var(--gold),var(--red),transparent); box-shadow:0 0 14px rgba(253,184,19,.8); }
+    .launch-word__en { font-family:'Orbitron',sans-serif; font-weight:700; letter-spacing:4px; text-transform:uppercase;
+      font-size:clamp(.78rem,2.6vw,1.15rem); line-height:1.7; color:#ffe9c2; }
+
+    /* sound toggle */
+    .audio-btn { position:fixed; bottom:74px; left:20px; z-index:5; width:42px; height:42px; border-radius:50%;
+      background:rgba(255,255,255,.08); border:1px solid rgba(253,184,19,.45); color:#fff; font-size:1.1rem; cursor:pointer;
+      display:grid; place-items:center; transition:.2s ease; }
+    .audio-btn:hover { background:var(--gold); }
+    body.launching .launch-word { animation:welcomeIn .9s cubic-bezier(.2,.9,.2,1) forwards; }
+    @keyframes welcomeIn { 0%{opacity:0; transform:scale(.7)} 45%{opacity:1; transform:scale(1.06)} 100%{opacity:1; transform:scale(1)} }
 
     #wrap { position:relative; z-index:2; width:100%; display:grid; place-items:center; }
 
@@ -257,25 +282,90 @@
   </div>
 
   <div class="flash"></div>
+  <div class="launch-word" id="launchWord">
+    <div>
+      <div class="launch-word__te">స్వాగతం</div>
+      <span class="launch-word__div"></span>
+      <div class="launch-word__en">Welcome to<br />NRI TDP Germany</div>
+    </div>
+  </div>
+
+  <audio id="bgm" src="mp3/bgm.mp3" loop preload="auto"></audio>
+  <button class="audio-btn" id="audioBtn" type="button" aria-label="Toggle sound">🔊</button>
 
   <script>
-    // particle starfield
+    // interactive constellation network
     (function () {
-      var c=document.getElementById('stars'), x=c.getContext('2d'), dpr=window.devicePixelRatio||1, P=[];
+      var c=document.getElementById('stars'), x=c.getContext('2d'), dpr=window.devicePixelRatio||1, P=[], mouse={x:-999,y:-999};
       function size(){ c.width=innerWidth*dpr; c.height=innerHeight*dpr; x.setTransform(dpr,0,0,dpr,0,0); }
       size(); addEventListener('resize', size);
-      var CL=['rgba(253,184,19,','rgba(243,111,33,','rgba(56,224,255,','rgba(255,255,255,'];
-      for(var i=0;i<110;i++) P.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2+.4,s:Math.random()*.55+.15,a:Math.random()*.6+.2,c:CL[(Math.random()*CL.length)|0]});
-      (function loop(){ x.clearRect(0,0,innerWidth,innerHeight);
-        for(var i=0;i<P.length;i++){var p=P[i]; p.y-=p.s; if(p.y<-5){p.y=innerHeight+5;p.x=Math.random()*innerWidth;}
-          x.beginPath(); x.fillStyle=p.c+p.a+')'; x.arc(p.x,p.y,p.r,0,7); x.fill();}
-        requestAnimationFrame(loop); })();
+      addEventListener('mousemove', function(e){ mouse.x=e.clientX; mouse.y=e.clientY; });
+      addEventListener('mouseleave', function(){ mouse.x=-999; mouse.y=-999; });
+      var N = Math.max(36, Math.min(90, Math.round(innerWidth/15)));
+      for(var i=0;i<N;i++) P.push({ x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+        vx:(-.5+Math.random())*.35, vy:(-.5+Math.random())*.35, r:Math.random()*1.6+.6 });
+      var D=140, MD=190;
+      (function loop(){
+        x.clearRect(0,0,innerWidth,innerHeight);
+        for(var i=0;i<P.length;i++){ var p=P[i];
+          p.x+=p.vx; p.y+=p.vy;
+          if(p.x<0||p.x>innerWidth) p.vx*=-1;
+          if(p.y<0||p.y>innerHeight) p.vy*=-1;
+          x.beginPath(); x.fillStyle='rgba(253,184,19,.75)'; x.arc(p.x,p.y,p.r,0,7); x.fill();
+          var mdx=p.x-mouse.x, mdy=p.y-mouse.y, md=Math.sqrt(mdx*mdx+mdy*mdy);
+          if(md<MD){ x.strokeStyle='rgba(56,224,255,'+(.3*(1-md/MD))+')'; x.lineWidth=1; x.beginPath(); x.moveTo(p.x,p.y); x.lineTo(mouse.x,mouse.y); x.stroke(); }
+        }
+        for(var i=0;i<P.length;i++){ for(var j=i+1;j<P.length;j++){
+          var a=P[i], b=P[j], dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
+          if(d<D){ x.strokeStyle='rgba(253,184,19,'+(.16*(1-d/D))+')'; x.lineWidth=1; x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke(); }
+        }}
+        requestAnimationFrame(loop);
+      })();
     })();
+
+    // text scramble / decrypt reveal
+    function scramble(el, finalText, dur){
+      if(!el) return;
+      var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@%&*<>/';
+      var start=performance.now(), len=finalText.length;
+      (function step(t){
+        var prog=Math.min(1,(t-start)/dur), reveal=Math.floor(prog*len), out='';
+        for(var i=0;i<len;i++){
+          var ch=finalText[i];
+          if(i<reveal || ch===' ' || ch==='·') out+=ch;
+          else out+=chars[(Math.random()*chars.length)|0];
+        }
+        el.textContent=out;
+        if(prog<1) requestAnimationFrame(step); else el.textContent=finalText;
+      })(start);
+    }
 
     // mouse parallax
     (function(){ var w=document.getElementById('wrap');
       addEventListener('mousemove', function(e){ var dx=e.clientX/innerWidth-.5, dy=e.clientY/innerHeight-.5;
         w.style.transform='translate('+(dx*-12)+'px,'+(dy*-8)+'px)'; }); })();
+
+    // ===== Background music =====
+    var TDP_BGM = (function () {
+      var a = document.getElementById('bgm');
+      var btn = document.getElementById('audioBtn');
+      if (!a) return {};
+      a.volume = 0.55;
+      function start(){ var p=a.play(); if(p&&p.catch) p.catch(function(){}); }
+      start();
+      // autoplay often blocked → start on first interaction
+      ['pointerdown','keydown','touchstart'].forEach(function(ev){
+        window.addEventListener(ev, function once(){ if(!a.muted) start(); }, { once:true });
+      });
+      if (btn) btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        a.muted = !a.muted; btn.textContent = a.muted ? '🔇' : '🔊';
+        if (!a.muted) start();
+      });
+      return { fadeOut:function(){
+        var t=setInterval(function(){ a.volume=Math.max(0,a.volume-0.07); if(a.volume<=0){ clearInterval(t); a.pause(); } },60);
+      }};
+    })();
 
     // ===== Sequence: origin -> leaders -> countdown -> launch =====
     (function () {
@@ -294,6 +384,8 @@
       var done = false, iv = null;
 
       ldl.textContent = 'LOCATING ORIGIN';
+      scramble(document.querySelector('.city'), 'MÜNCHEN', 1100);
+      scramble(document.querySelector('.coords'), '48.1351° N · 11.5820° E — Germany', 1400);
 
       // single loader progress across the whole sequence
       var seqStart = performance.now();
@@ -309,9 +401,12 @@
       function go(){
         done = true; if(iv) clearInterval(iv);
         fill.style.width='100%'; pct.textContent='100%';
+        ldl.textContent = 'LIFTOFF';
         try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}
+        document.body.classList.remove('shake');
         document.body.classList.add('launching');
-        setTimeout(function(){ window.location.href='index.html'; }, 650);
+        if (TDP_BGM && TDP_BGM.fadeOut) TDP_BGM.fadeOut();
+        setTimeout(function(){ window.location.href='index.html'; }, 1300);
       }
 
       function showLeaders(){
@@ -341,6 +436,8 @@
           n--;
           if(n<=0){ clearInterval(iv); go(); return; }
           numEl.textContent=n; numEl.classList.remove('tick'); void numEl.offsetWidth; numEl.classList.add('tick'); setHint();
+          if(n<=3){ numEl.classList.add('final');
+            document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake'); }
         }, 1000);
       }
 
