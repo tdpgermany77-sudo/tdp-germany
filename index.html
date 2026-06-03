@@ -38,11 +38,16 @@
       <nav class="nav" id="nav">
         <a href="#home">Home</a>
         <a href="#about">About</a>
-        <a href="#leadership">Leadership</a>
-        <a href="#team">Team</a>
+        <div class="nav__dropdown">
+          <button type="button" class="nav__dropbtn">Our People <span class="nav__caret">▾</span></button>
+          <div class="nav__submenu">
+            <a href="#leadership">Leadership</a>
+            <a href="#team">Team</a>
+          </div>
+        </div>
         <a href="#mission">Mission</a>
-        <div class="nav__dropdown" id="navDrop">
-          <button type="button" class="nav__dropbtn" id="navDropBtn">Highlights <span class="nav__caret">▾</span></button>
+        <div class="nav__dropdown">
+          <button type="button" class="nav__dropbtn">Highlights <span class="nav__caret">▾</span></button>
           <div class="nav__submenu">
             <a href="#events">Events</a>
             <a href="#gallery">Gallery</a>

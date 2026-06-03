@@ -6,16 +6,22 @@ nav?.querySelectorAll('a').forEach((a) =>
   a.addEventListener('click', () => nav.classList.remove('open'))
 );
 
-// ===== Highlights dropdown (click/touch toggle) =====
-const navDrop = document.getElementById('navDrop');
-const navDropBtn = document.getElementById('navDropBtn');
-navDropBtn?.addEventListener('click', (e) => {
-  e.stopPropagation();
-  navDrop.classList.toggle('open');
+// ===== Nav dropdowns (click/touch toggle) =====
+const navDropdowns = document.querySelectorAll('.nav__dropdown');
+navDropdowns.forEach((drop) => {
+  const btn = drop.querySelector('.nav__dropbtn');
+  btn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const wasOpen = drop.classList.contains('open');
+    navDropdowns.forEach((d) => d.classList.remove('open'));
+    if (!wasOpen) drop.classList.add('open');
+  });
+  drop.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => drop.classList.remove('open'))
+  );
 });
-document.addEventListener('click', () => navDrop?.classList.remove('open'));
-navDrop?.querySelectorAll('a').forEach((a) =>
-  a.addEventListener('click', () => navDrop.classList.remove('open'))
+document.addEventListener('click', () =>
+  navDropdowns.forEach((d) => d.classList.remove('open'))
 );
 
 // ===== Current year =====
