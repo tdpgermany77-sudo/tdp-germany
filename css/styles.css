@@ -269,6 +269,7 @@ h2 { line-height: 1.15; }
 .member__placeholder { font-size: .85rem; color: var(--muted); opacity: .7; }
 
 /* ===== Spotlight (NRI leadership) ===== */
+#nri-leadership h2 { font-size: clamp(1.25rem, 2.6vw, 1.6rem); }
 .spotlight {
   display: grid; grid-template-columns: .8fr 1.2fr; gap: 0; align-items: stretch;
   max-width: 940px; margin: 0 auto; background: #fff; border-radius: var(--radius);
