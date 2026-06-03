@@ -71,6 +71,20 @@ a { text-decoration: none; color: inherit; }
   background: var(--grad-red); transition: width .25s ease;
 }
 .nav a:not(.btn):hover::after { width: 100%; }
+/* Highlights dropdown */
+.nav__dropdown { position: relative; }
+.nav__dropbtn { font: inherit; font-weight: 500; font-size: .95rem; color: inherit; background: none; border: none; cursor: pointer; padding: 0; display: inline-flex; align-items: center; gap: 5px; }
+.nav__caret { font-size: .7rem; transition: transform .2s ease; }
+.nav__dropdown:hover .nav__caret, .nav__dropdown.open .nav__caret { transform: rotate(180deg); }
+.nav__submenu {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(12px);
+  background: #fff; box-shadow: var(--shadow); border-radius: 12px; padding: 8px; min-width: 160px;
+  display: flex; flex-direction: column; gap: 2px; opacity: 0; visibility: hidden; transition: opacity .2s ease, transform .2s ease, visibility .2s; z-index: 60;
+}
+.nav__dropdown:hover .nav__submenu, .nav__dropdown.open .nav__submenu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(8px); }
+.nav__submenu a { padding: 9px 14px; border-radius: 8px; font-size: .92rem; }
+.nav__submenu a::after { display: none; }
+.nav__submenu a:hover { background: var(--cream); color: var(--red); }
 .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
 .nav-toggle span { width: 26px; height: 3px; background: var(--ink); border-radius: 3px; transition: .3s; }
 
@@ -540,6 +554,12 @@ h2 { line-height: 1.15; }
   }
   .nav.open { transform: none; }
   .nav-toggle { display: flex; }
+  /* dropdown opens inline inside the mobile drawer */
+  .nav__dropdown { width: 100%; }
+  .nav__dropbtn { width: 100%; justify-content: flex-start; font-weight: 600; }
+  .nav__caret { display: none; }
+  .nav__submenu { position: static; transform: none; opacity: 1; visibility: visible; box-shadow: none; background: transparent; padding: 8px 0 0 16px; min-width: 0; gap: 10px; }
+  .nav__submenu a { padding: 0; }
 }
 @media (max-width: 560px) {
   .leaders, .cards, .stats__grid { grid-template-columns: 1fr; }

@@ -6,6 +6,18 @@ nav?.querySelectorAll('a').forEach((a) =>
   a.addEventListener('click', () => nav.classList.remove('open'))
 );
 
+// ===== Highlights dropdown (click/touch toggle) =====
+const navDrop = document.getElementById('navDrop');
+const navDropBtn = document.getElementById('navDropBtn');
+navDropBtn?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  navDrop.classList.toggle('open');
+});
+document.addEventListener('click', () => navDrop?.classList.remove('open'));
+navDrop?.querySelectorAll('a').forEach((a) =>
+  a.addEventListener('click', () => navDrop.classList.remove('open'))
+);
+
 // ===== Current year =====
 document.getElementById('year').textContent = new Date().getFullYear();
 
