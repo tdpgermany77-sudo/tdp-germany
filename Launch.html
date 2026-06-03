@@ -44,6 +44,14 @@
     .hud .t1{top:2px;left:44px} .hud .t2{top:2px;right:44px} .hud .b1{bottom:2px;left:44px} .hud .b2{bottom:2px;right:44px}
     .hud .b1 em { color:#5fffa0; font-style:normal; }
 
+    /* highlighted website URL — visible on every launch screen */
+    .site-url { position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:8;
+      font-family:'Orbitron',sans-serif; font-weight:700; letter-spacing:1.5px; font-size:clamp(.66rem,2vw,.82rem);
+      color:#1c1408; background:linear-gradient(135deg, #FDB813, #F36F21); padding:8px 18px; border-radius:999px;
+      white-space:nowrap; box-shadow:0 0 22px rgba(253,184,19,.6); animation:urlGlow 2.2s ease-in-out infinite; }
+    .site-url:hover { color:#000; }
+    @keyframes urlGlow { 0%,100%{ box-shadow:0 0 16px rgba(253,184,19,.5); } 50%{ box-shadow:0 0 34px rgba(253,184,19,.95); } }
+
     .scan { position:fixed; inset:0; z-index:4; pointer-events:none; opacity:.5;
       background:repeating-linear-gradient(rgba(255,255,255,.025) 0 1px, transparent 1px 3px); animation:flick 5s steps(60) infinite; }
     @keyframes flick { 0%,100%{opacity:.5} 50%{opacity:.38} }
@@ -230,6 +238,10 @@
       .grid,.aurora,.logo,.dashring,.orbit,.radar::before,.num.tick,h1,.scan,.lphoto::after,.lcard { animation:none; }
       .lcard{opacity:1;transform:none}
     }
+    @media (max-width: 640px) {
+      .hud .t1, .hud .t2 { display:none; }   /* make room for the URL badge */
+      .site-url { font-size:.62rem; padding:6px 12px; letter-spacing:1px; }
+    }
   </style>
 </head>
 <body>
@@ -243,6 +255,8 @@
     <b class="t1">TDP // GERMANY</b><b class="t2">NODE · EU-DE</b>
     <b class="b1">STATUS: <em>ONLINE</em></b><b class="b2">v2026.06</b>
   </div>
+
+  <a class="site-url" href="https://www.tdpgermany.org" target="_blank" rel="noopener">🌐 www.tdpgermany.org</a>
 
   <div id="wrap">
     <!-- Stage: Launch button -->
