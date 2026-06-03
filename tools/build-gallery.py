@@ -58,7 +58,17 @@ def build():
                 continue
             files = [f for f in os.listdir(edir)
                      if f.lower().endswith(IMG_EXT) and not f.startswith(".")]
-            files.sort(key=natural_key)
+            # When both a .webp and an original (.jpg/.png) exist for the same
+            # name, prefer the optimized webp (originals are kept out of the repo).
+            PRIORITY = {".webp": 3, ".avif": 3, ".png": 2, ".jpg": 1, ".jpeg": 1, ".gif": 1}
+            by_stem = {}
+            for f in files:
+                stem, ext = os.path.splitext(f)
+                ext = ext.lower()
+                cur = by_stem.get(stem)
+                if cur is None or PRIORITY.get(ext, 0) > PRIORITY.get(os.path.splitext(cur)[1].lower(), 0):
+                    by_stem[stem] = f
+            files = sorted(by_stem.values(), key=natural_key)
             if not files:
                 continue
             cover = next((f for f in files if os.path.splitext(f)[0].lower() == "cover"), files[0])
