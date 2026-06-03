@@ -268,6 +268,20 @@ h2 { line-height: 1.15; }
 }
 .member__placeholder { font-size: .85rem; color: var(--muted); opacity: .7; }
 
+/* ===== Spotlight (NRI leadership) ===== */
+.spotlight {
+  display: grid; grid-template-columns: .8fr 1.2fr; gap: 0; align-items: stretch;
+  max-width: 940px; margin: 0 auto; background: #fff; border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow); border-top: 5px solid var(--red);
+}
+.spotlight__photo { position: relative; min-height: 100%; }
+.spotlight__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.spotlight__body { padding: 32px 36px; align-self: center; }
+.spotlight__body h3 { font-size: clamp(1.4rem, 3vw, 1.95rem); font-weight: 800; line-height: 1.1; }
+.spotlight__role { display: block; color: var(--red); font-weight: 600; font-size: .95rem; margin: 6px 0 16px; }
+.spotlight__body p { color: #4a4338; margin-bottom: 12px; }
+.spotlight__body p:last-child { margin-bottom: 0; }
+
 /* ===== Cards / Mission ===== */
 .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 .card {
@@ -512,6 +526,9 @@ h2 { line-height: 1.15; }
   .gallery-years { grid-template-columns: repeat(3, 1fr); }
   .ncards { grid-template-columns: repeat(2, 1fr); }
   .posts { grid-template-columns: 1fr; }
+  .spotlight { grid-template-columns: 1fr; }
+  .spotlight__photo { max-height: 420px; }
+  .spotlight__body { padding: 26px 24px; }
 }
 @media (max-width: 720px) {
   .topbar { display: none; }
