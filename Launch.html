@@ -194,6 +194,11 @@
 
     /* welcome reveal at launch */
     .launch-word { position:fixed; inset:0; z-index:7; display:grid; place-items:center; text-align:center; pointer-events:none; opacity:0; }
+    .launch-word__photos { display:flex; justify-content:center; align-items:center; margin-bottom:26px; }
+    .lw-photo { width:clamp(150px,27vw,290px); aspect-ratio:3/2; object-fit:cover; object-position:center; border-radius:14px;
+      border:3px solid rgba(253,184,19,.85); box-shadow:0 16px 50px rgba(0,0,0,.55), 0 0 30px rgba(253,184,19,.45); background:#111; }
+    .lw-photo--l { transform:rotate(-6deg); }
+    .lw-photo--r { transform:rotate(6deg); margin-left:-26px; }
     .launch-word__te { font-family:'Ramabhadra',sans-serif; font-weight:400; font-size:clamp(3.4rem,14vw,8rem); color:#fff;
       text-shadow:0 0 36px rgba(253,184,19,.9), 0 0 80px rgba(226,35,26,.5); line-height:1.1; letter-spacing:1px; }
     .launch-word__div { display:block; width:clamp(120px,30vw,220px); height:2px; margin:30px auto;
@@ -324,7 +329,11 @@
 
   <div class="flash"></div>
   <div class="launch-word" id="launchWord">
-    <div>
+    <div class="launch-word__inner">
+      <div class="launch-word__photos">
+        <img class="lw-photo lw-photo--l" src="welcome-photos/welcome-cbn.webp" alt="NRI TDP Germany welcomes Sri Chandrababu Naidu" />
+        <img class="lw-photo lw-photo--r" src="welcome-photos/welcome-lokesh.webp" alt="NRI TDP Germany welcomes Sri Nara Lokesh" />
+      </div>
       <div class="launch-word__te">స్వాగతం</div>
       <span class="launch-word__div"></span>
       <div class="launch-word__en">Welcome to<br />NRI TDP Germany</div>
