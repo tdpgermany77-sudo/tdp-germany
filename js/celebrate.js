@@ -95,11 +95,32 @@
 
   window.tdpCelebrate = burst; // manual trigger if ever needed
 
+  function continueMusic() {
+    var m = document.getElementById('bgmMain');
+    if (!m) return;
+    var t = 0;
+    try { t = parseFloat(sessionStorage.getItem('tdpMusicTime') || '0') || 0; sessionStorage.removeItem('tdpMusicTime'); } catch (e) {}
+    m.volume = 0.55;
+    function play() { try { if (t) m.currentTime = t; } catch (e) {} var p = m.play(); if (p && p.catch) p.catch(function () {}); }
+    play();
+    // if autoplay is blocked on the fresh page, resume on first interaction
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+      window.addEventListener(ev, function once() { if (m.paused) play(); }, { once: true });
+    });
+    // gentle fade-out at the very end of the track
+    m.addEventListener('timeupdate', function () {
+      if (m.duration && m.duration - m.currentTime < 2) {
+        m.volume = Math.max(0, m.volume - 0.04);
+      }
+    });
+  }
+
   function maybe() {
     var fromLaunch = false;
     try { fromLaunch = sessionStorage.getItem('tdpLaunch') === '1'; } catch (e) {}
     if (!fromLaunch) return;
     try { sessionStorage.removeItem('tdpLaunch'); } catch (e) {}   // fire only once
+    continueMusic();                                              // resume launch music
     // small delay so the page paints first, then celebrate (a few staggered blasts)
     setTimeout(burst, 350);
     setTimeout(burst, 1100);

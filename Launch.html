@@ -460,6 +460,7 @@
       });
       return {
         start: start,
+        el: a,
         fadeOut: function(){
           var t=setInterval(function(){ a.volume=Math.max(0,a.volume-0.07); if(a.volume<=0){ clearInterval(t); a.pause(); } },60);
         }
@@ -496,9 +497,11 @@
         setTimeout(tdpConfetti, 450);
         setTimeout(tdpConfetti, 1300);
         setTimeout(tdpConfetti, 2200);
-        // music plays through the whole welcome + confetti, fades right at the end
-        setTimeout(function(){ if (TDP_BGM && TDP_BGM.fadeOut) TDP_BGM.fadeOut(); }, 3600);
-        setTimeout(function(){ window.location.href='index.html'; }, 4200);
+        // music keeps playing; hand its playback position to index.html so it continues there
+        setTimeout(function(){
+          try { if (TDP_BGM && TDP_BGM.el) sessionStorage.setItem('tdpMusicTime', String(TDP_BGM.el.currentTime || 0)); } catch(e){}
+          window.location.href='index.html';
+        }, 4200);
       }
 
       function showLeaders(){
