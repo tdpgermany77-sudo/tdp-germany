@@ -130,6 +130,25 @@
     .loader, .skip-fixed { opacity:0; pointer-events:none; transition:opacity .5s ease; }
     body.started .loader, body.started .skip-fixed { opacity:1; pointer-events:auto; }
 
+    /* ===== Globe scan stage (before Munich) ===== */
+    .globe { position:relative; width:min(250px,64vw); aspect-ratio:1; margin:2px auto 18px; animation:scopeIn .8s ease both; }
+    .globe__sphere { position:absolute; inset:0; border-radius:50%; overflow:hidden; border:1.5px solid rgba(56,224,255,.5);
+      background:radial-gradient(circle at 36% 30%, rgba(56,224,255,.16), rgba(8,16,30,.55) 72%);
+      box-shadow:inset 0 0 50px rgba(56,224,255,.2), 0 0 36px rgba(56,224,255,.22); }
+    .globe__sphere::before { content:''; position:absolute; inset:0;
+      background:repeating-linear-gradient(0deg, rgba(56,224,255,.18) 0 1px, transparent 1px 18px); }
+    .globe__lon, .globe__lon::before, .globe__lon::after { content:''; position:absolute; top:-2%; bottom:-2%; left:50%; transform:translateX(-50%); border:1px solid rgba(56,224,255,.22); border-radius:50%; }
+    .globe__lon { width:55%; }
+    .globe__lon::before { width:90%; } .globe__lon::after { width:22%; }
+    .globe__scan { position:absolute; left:-10%; right:-10%; height:36%; background:linear-gradient(transparent, rgba(56,224,255,.34), transparent); animation:scanV 2.4s ease-in-out infinite; }
+    @keyframes scanV { 0%{top:-36%} 100%{top:100%} }
+    .globe__dot { position:absolute; left:57%; top:40%; width:12px; height:12px; border-radius:50%; background:var(--gold); animation:dotPulse 1.6s ease-in-out infinite; z-index:2; }
+    @keyframes dotPulse { 0%,100%{box-shadow:0 0 10px 2px rgba(253,184,19,.7); transform:scale(1)} 50%{box-shadow:0 0 20px 7px rgba(253,184,19,1); transform:scale(1.25)} }
+    .globe__orbit { position:absolute; inset:-13%; border-radius:50%; border:1px dashed rgba(253,184,19,.45); animation:spin 13s linear infinite; }
+    .globe__orbit::before { content:''; position:absolute; top:-5px; left:50%; width:11px; height:11px; margin-left:-5.5px; border-radius:50%; background:var(--gold); box-shadow:0 0 14px 4px rgba(253,184,19,.85); }
+    .scan-title { font-family:'Orbitron',sans-serif; font-weight:900; letter-spacing:5px; font-size:clamp(1.3rem,4.5vw,2.4rem); color:#fff; text-shadow:0 0 18px rgba(56,224,255,.5); }
+    .scan-status { font-family:'Orbitron',sans-serif; letter-spacing:2px; font-size:clamp(.62rem,1.8vw,.78rem); color:var(--cyan); opacity:.85; margin-top:12px; }
+
     /* ===== Origin (Munich) — radar / targeting scope ===== */
     @keyframes ping { 0%{transform:scale(.35);opacity:.9} 80%{opacity:0} 100%{transform:scale(3.6);opacity:0} }
     .scope { position:relative; width:min(300px,78vw); aspect-ratio:1; margin:2px auto 16px; display:grid; place-items:center;
@@ -303,6 +322,21 @@
         </span>
       </button>
       <p class="start-hint">Press to begin</p>
+    </section>
+
+    <!-- Stage: Globe scan (before Munich) -->
+    <section class="stage stage--stack" id="stageScan">
+      <div class="eyebrow">Establishing Origin</div>
+      <div class="globe">
+        <div class="globe__sphere">
+          <span class="globe__lon"></span>
+          <span class="globe__scan"></span>
+          <span class="globe__dot"></span>
+        </div>
+        <span class="globe__orbit"></span>
+      </div>
+      <h1 class="scan-title" id="scanTitle">LOCATING ORIGIN</h1>
+      <div class="scan-status">Scanning the Telugu diaspora across Europe…</div>
     </section>
 
     <!-- Stage 0: Origin / Munich -->
@@ -508,11 +542,13 @@
 
     // ===== Sequence: origin -> leaders -> countdown -> launch =====
     (function () {
+      var SCAN_MS    = 3500;   // globe scan screen
       var ORIGIN_MS  = 4200;   // Munich origin screen
       var LEADERS_MS = 4800;   // leaders showcase
       var START_COUNT = 10;    // countdown start
 
       var startEl   = document.getElementById('stageStart');
+      var scanEl    = document.getElementById('stageScan');
       var originEl  = document.getElementById('stageOrigin');
       var leadersEl = document.getElementById('stageLeaders');
       var countEl   = document.getElementById('stageCount');
@@ -581,19 +617,27 @@
       function begin(){
         if (started) return; started = true;
         document.body.classList.add('started');
-        swap(startEl, originEl);
-        ldl.textContent = 'LOCATING ORIGIN';
-        scramble(document.querySelector('.city'), 'MÜNCHEN', 1100);
-        scramble(document.querySelector('.coords'), '48.1351° N · 11.5820° E — Germany', 1400);
+        swap(startEl, scanEl);
+        ldl.textContent = 'ESTABLISHING ORIGIN';
+        scramble(document.getElementById('scanTitle'), 'LOCATING ORIGIN', 1100);
 
         var seqStart = performance.now();
-        var TOTAL = ORIGIN_MS + LEADERS_MS + START_COUNT * 1000;
+        var TOTAL = SCAN_MS + ORIGIN_MS + LEADERS_MS + START_COUNT * 1000;
         (function prog(){ if(done) return;
           var p = Math.min(100, (performance.now()-seqStart)/TOTAL*100);
           fill.style.width = p+'%'; pct.textContent = Math.round(p)+'%';
           if (p < 100) requestAnimationFrame(prog);
         })();
 
+        setTimeout(showOrigin, SCAN_MS);
+      }
+
+      function showOrigin(){
+        if (done) return;
+        swap(scanEl, originEl);
+        ldl.textContent = 'ORIGIN LOCATED';
+        scramble(document.querySelector('.city'), 'MÜNCHEN', 1100);
+        scramble(document.querySelector('.coords'), '48.1351° N · 11.5820° E — Germany', 1400);
         setTimeout(showLeaders, ORIGIN_MS);
         setTimeout(startCountdown, ORIGIN_MS + LEADERS_MS);
       }
