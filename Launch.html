@@ -415,6 +415,32 @@
       })(start);
     }
 
+    // confetti cannons (fired on the welcome screen, music still playing)
+    function tdpConfetti(){
+      var COLORS=['#FDB813','#F36F21','#E2231A','#8B0000','#ffffff','#ffffff'];
+      var canvas=document.getElementById('confettiCanvas');
+      if(!canvas){ canvas=document.createElement('canvas'); canvas.id='confettiCanvas';
+        canvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9';
+        document.body.appendChild(canvas); }
+      var ctx=canvas.getContext('2d'), dpr=window.devicePixelRatio||1, W=innerWidth, H=innerHeight;
+      canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      var pieces=window.__conf||(window.__conf=[]);
+      var y=H-6, n=Math.min(120, Math.round(W/8));
+      function fire(x,base){ for(var i=0;i<n;i++){ var a=base+(Math.random()-.5)*.8, s=13+Math.random()*13;
+        pieces.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,w:6+Math.random()*6,h:8+Math.random()*9,
+          color:COLORS[(Math.random()*COLORS.length)|0],rot:Math.random()*Math.PI,vr:-.3+Math.random()*.6,life:0,ttl:80+Math.random()*50}); } }
+      fire(W*0.06,-Math.PI/2+0.42); fire(W*0.94,-Math.PI/2-0.42);
+      if(!window.__confRAF){ window.__confRAF=true;
+        (function frame(){ ctx.clearRect(0,0,W,H);
+          for(var i=pieces.length-1;i>=0;i--){ var p=pieces[i];
+            p.vy+=0.32; p.vx*=0.992; p.vy*=0.992; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life++;
+            var al=p.life>p.ttl?Math.max(0,1-(p.life-p.ttl)/30):1;
+            ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.globalAlpha=al; ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+            if(al<=0||p.y>H+40) pieces.splice(i,1); }
+          if(pieces.length) requestAnimationFrame(frame); else { window.__confRAF=false; ctx.clearRect(0,0,W,H); }
+        })(); }
+    }
+
     // mouse parallax
     (function(){ var w=document.getElementById('wrap');
       addEventListener('mousemove', function(e){ var dx=e.clientX/innerWidth-.5, dy=e.clientY/innerHeight-.5;
@@ -466,9 +492,13 @@
         try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}
         document.body.classList.remove('shake');
         document.body.classList.add('launching');
-        // hold the స్వాగతం / Welcome highlight ~3s, music fades at the end
-        setTimeout(function(){ if (TDP_BGM && TDP_BGM.fadeOut) TDP_BGM.fadeOut(); }, 2400);
-        setTimeout(function(){ window.location.href='index.html'; }, 3000);
+        // confetti bursts ON the welcome screen, music still playing
+        setTimeout(tdpConfetti, 450);
+        setTimeout(tdpConfetti, 1300);
+        setTimeout(tdpConfetti, 2200);
+        // music plays through the whole welcome + confetti, fades right at the end
+        setTimeout(function(){ if (TDP_BGM && TDP_BGM.fadeOut) TDP_BGM.fadeOut(); }, 3600);
+        setTimeout(function(){ window.location.href='index.html'; }, 4200);
       }
 
       function showLeaders(){
@@ -529,6 +559,10 @@
       function skip(){ if(!started){ begin(); return; } if(!done) go(); }
       document.getElementById('skip').addEventListener('click', skip);
       var sf = document.getElementById('skipFixed'); if (sf) sf.addEventListener('click', skip);
+
+      // celebratory confetti on the opening LAUNCH screen, repeating until launch
+      setTimeout(tdpConfetti, 500);
+      var openIv = setInterval(function(){ if (started) { clearInterval(openIv); return; } tdpConfetti(); }, 3200);
     })();
   </script>
   <div class="scan"></div>
