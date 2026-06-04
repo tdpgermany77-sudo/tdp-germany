@@ -186,11 +186,21 @@
     .loader__bar { height:3px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
     .loader__fill { height:100%; width:0%; background:linear-gradient(90deg,var(--gold),var(--orange),var(--red)); box-shadow:0 0 12px rgba(253,184,19,.8); transition:width .2s linear; }
 
-    .flash { position:fixed; inset:0; z-index:6; pointer-events:none; opacity:0; background:radial-gradient(circle at 50% 55%, #fff, var(--gold) 38%, var(--red) 92%); }
-    body.launching .flash { animation:flash .9s ease forwards; }
+    .flash { position:fixed; inset:0; z-index:6; pointer-events:none; opacity:0; background:radial-gradient(circle at 50% 50%, #fff 0%, #fff 25%, var(--gold) 55%, var(--red) 95%); }
+    body.blast .flash { animation:flash 1s ease forwards; }
     body.launching #wrap { animation:warp .9s ease forwards; }
-    @keyframes flash { 0%{opacity:0} 45%{opacity:.95} 100%{opacity:0} }
-    @keyframes warp { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.6);opacity:0;filter:blur(10px)} }
+    @keyframes flash { 0%{opacity:0} 12%{opacity:1} 40%{opacity:1} 100%{opacity:0} }
+    @keyframes warp { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.7);opacity:0;filter:blur(12px)} }
+    /* expanding shockwave ring */
+    .shockwave { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.2); z-index:8; pointer-events:none;
+      width:60px; height:60px; border-radius:50%; border:8px solid rgba(255,255,255,.95); opacity:0; box-shadow:0 0 40px rgba(253,184,19,.8); }
+    .shockwave.go { animation:shock 1s cubic-bezier(.12,.7,.2,1) forwards; }
+    @keyframes shock { 0%{opacity:.95; transform:translate(-50%,-50%) scale(.15); border-width:10px}
+      70%{opacity:.5} 100%{opacity:0; transform:translate(-50%,-50%) scale(46); border-width:1px} }
+    /* big blast shake */
+    body.bigshake { animation:bigshake .6s cubic-bezier(.36,.07,.19,.97); }
+    @keyframes bigshake { 10%{transform:translate(-7px,4px)} 25%{transform:translate(8px,-5px)} 40%{transform:translate(-9px,3px)}
+      55%{transform:translate(7px,5px)} 70%{transform:translate(-5px,-3px)} 85%{transform:translate(4px,2px)} 100%{transform:none} }
 
     /* dramatic final countdown */
     .num.final { color:var(--red) !important; text-shadow:0 0 46px rgba(226,35,26,.95), 0 0 80px rgba(226,35,26,.5) !important; }
@@ -352,6 +362,7 @@
   </div>
 
   <div class="flash"></div>
+  <div class="shockwave" id="shockwave"></div>
   <div class="launch-word" id="launchWord">
     <div class="launch-word__inner">
       <span class="launch-word__burst"></span>
@@ -415,9 +426,9 @@
       })(start);
     }
 
-    // confetti cannons (fired on the welcome screen, music still playing)
+    // explosive confetti — bursts radially from the centre (climax only)
     function tdpConfetti(){
-      var COLORS=['#FDB813','#F36F21','#E2231A','#8B0000','#ffffff','#ffffff'];
+      var COLORS=['#FDB813','#F36F21','#E2231A','#8B0000','#ffffff','#ffffff','#38e0ff'];
       var canvas=document.getElementById('confettiCanvas');
       if(!canvas){ canvas=document.createElement('canvas'); canvas.id='confettiCanvas';
         canvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9';
@@ -425,20 +436,24 @@
       var ctx=canvas.getContext('2d'), dpr=window.devicePixelRatio||1, W=innerWidth, H=innerHeight;
       canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
       var pieces=window.__conf||(window.__conf=[]);
-      var y=H-6, n=Math.min(120, Math.round(W/8));
-      function fire(x,base){ for(var i=0;i<n;i++){ var a=base+(Math.random()-.5)*.8, s=13+Math.random()*13;
-        pieces.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,w:6+Math.random()*6,h:8+Math.random()*9,
-          color:COLORS[(Math.random()*COLORS.length)|0],rot:Math.random()*Math.PI,vr:-.3+Math.random()*.6,life:0,ttl:80+Math.random()*50}); } }
-      fire(W*0.06,-Math.PI/2+0.42); fire(W*0.94,-Math.PI/2-0.42);
+      var cx=W/2, cy=H*0.46, n=Math.min(260, Math.round(W/3.4));
+      for(var i=0;i<n;i++){ var a=Math.random()*Math.PI*2, s=7+Math.random()*30;
+        pieces.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-4,w:6+Math.random()*7,h:8+Math.random()*11,
+          color:COLORS[(Math.random()*COLORS.length)|0],rot:Math.random()*Math.PI,vr:-.4+Math.random()*.8,life:0,ttl:95+Math.random()*65}); }
       if(!window.__confRAF){ window.__confRAF=true;
         (function frame(){ ctx.clearRect(0,0,W,H);
           for(var i=pieces.length-1;i>=0;i--){ var p=pieces[i];
-            p.vy+=0.32; p.vx*=0.992; p.vy*=0.992; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life++;
+            p.vy+=0.30; p.vx*=0.985; p.vy*=0.985; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life++;
             var al=p.life>p.ttl?Math.max(0,1-(p.life-p.ttl)/30):1;
             ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.globalAlpha=al; ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
             if(al<=0||p.y>H+40) pieces.splice(i,1); }
           if(pieces.length) requestAnimationFrame(frame); else { window.__confRAF=false; ctx.clearRect(0,0,W,H); }
         })(); }
+    }
+    // expanding shockwave ring
+    function tdpShock(){
+      var s=document.getElementById('shockwave'); if(!s) return;
+      s.classList.remove('go'); void s.offsetWidth; s.classList.add('go');
     }
 
     // mouse parallax
@@ -492,11 +507,15 @@
         ldl.textContent = 'LIFTOFF';
         try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}
         document.body.classList.remove('shake');
-        document.body.classList.add('launching');
-        // confetti bursts ON the welcome screen, music still playing
-        setTimeout(tdpConfetti, 450);
-        setTimeout(tdpConfetti, 1300);
-        setTimeout(tdpConfetti, 2200);
+        document.body.classList.add('launching','blast');
+        // === THE BLAST === shockwave + hard shake + explosion of confetti at the reveal
+        tdpShock();
+        setTimeout(tdpShock, 200);
+        document.body.classList.remove('bigshake'); void document.body.offsetWidth; document.body.classList.add('bigshake');
+        setTimeout(tdpConfetti, 120);
+        setTimeout(tdpConfetti, 520);
+        setTimeout(tdpConfetti, 1100);
+        setTimeout(tdpConfetti, 1900);
         // music keeps playing; hand its playback position to index.html so it continues there
         setTimeout(function(){
           try { if (TDP_BGM && TDP_BGM.el) sessionStorage.setItem('tdpMusicTime', String(TDP_BGM.el.currentTime || 0)); } catch(e){}
@@ -533,7 +552,8 @@
           if(n<=0){ clearInterval(iv); go(); return; }
           numEl.textContent=n; numEl.classList.remove('tick'); void numEl.offsetWidth; numEl.classList.add('tick'); setHint();
           if(n<=3){ numEl.classList.add('final');
-            document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake'); }
+            document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake');
+            tdpShock(); }   // tension shockwave on 3 · 2 · 1
         }, 1000);
       }
 
@@ -562,10 +582,6 @@
       function skip(){ if(!started){ begin(); return; } if(!done) go(); }
       document.getElementById('skip').addEventListener('click', skip);
       var sf = document.getElementById('skipFixed'); if (sf) sf.addEventListener('click', skip);
-
-      // celebratory confetti on the opening LAUNCH screen, repeating until launch
-      setTimeout(tdpConfetti, 500);
-      var openIv = setInterval(function(){ if (started) { clearInterval(openIv); return; } tdpConfetti(); }, 3200);
     })();
   </script>
   <div class="scan"></div>
