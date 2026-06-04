@@ -430,7 +430,7 @@
       </div>
       <div class="launch-word__te">స్వాగతం</div>
       <span class="launch-word__div"></span>
-      <div class="launch-word__en">Welcome to<br />NRI TDP Germany</div>
+      <div class="launch-word__en">Welcome to<br />NRI TDP Germany Official Website</div>
     </div>
   </div>
 
@@ -565,14 +565,16 @@
         done = true; if(iv) clearInterval(iv);
         fill.style.width='100%'; pct.textContent='100%';
         ldl.textContent = 'LIFTOFF';
-        try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}
+        try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}   // tell the website to celebrate
         document.body.classList.remove('shake');
         document.body.classList.add('launching','blast');
-        // === THE BLAST === flash + shockwave + hard shake (confetti happens on the main site)
+        // === THE BLAST === flash + shockwave + hard shake. NO confetti here —
+        // the confetti fires on the actual website, with the song still playing.
         tdpShock();
         setTimeout(tdpShock, 200);
         document.body.classList.remove('bigshake'); void document.body.offsetWidth; document.body.classList.add('bigshake');
-        // music keeps playing; hand its playback position to index.html so it continues there
+        // hand the song's playback position to index.html so it keeps playing across
+        // the reveal and ENDS on the website, just after the confetti comes.
         setTimeout(function(){
           try { if (TDP_BGM && TDP_BGM.el) sessionStorage.setItem('tdpMusicTime', String(TDP_BGM.el.currentTime || 0)); } catch(e){}
           window.location.href='index.html';
@@ -581,7 +583,7 @@
 
       function showLeaders(){
         if(done) return;
-        if (TDP_BGM && TDP_BGM.start) TDP_BGM.start();   // music begins as the leaders appear
+        if (TDP_BGM && TDP_BGM.start) TDP_BGM.start();   // song begins on the leaders page
         swap(originEl, leadersEl);
         ldl.textContent = 'ACCESSING ARCHIVE';
         // restart leader card entrance animations now that they're visible
