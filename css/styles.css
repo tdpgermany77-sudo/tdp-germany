@@ -548,18 +548,40 @@ h2 { line-height: 1.15; }
 @media (max-width: 720px) {
   .topbar { display: none; }
   .nav {
-    position: fixed; inset: 76px 0 auto 0; flex-direction: column; background: #fff;
-    padding: 24px; box-shadow: var(--shadow); transform: translateY(-150%);
-    transition: transform .3s ease; gap: 18px;
+    position: fixed; top: 76px; left: 0; right: 0;
+    height: calc(100vh - 76px); height: calc(100dvh - 76px);
+    flex-direction: column; align-items: stretch;
+    background: #fff; padding: 8px 22px 36px; box-shadow: var(--shadow);
+    transform: translateY(-150%); transition: transform .3s ease; gap: 0;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
   }
   .nav.open { transform: none; }
   .nav-toggle { display: flex; }
-  /* dropdown opens inline inside the mobile drawer */
+
+  /* every top-level item is a consistent full-width, left-aligned row */
+  .nav > a:not(.btn),
+  .nav__dropbtn {
+    display: flex; align-items: center; width: 100%; text-align: left;
+    padding: 15px 2px; font-size: 1.06rem; font-weight: 600;
+    border-bottom: 1px solid var(--cream);
+  }
+  .nav > a:not(.btn)::after { display: none; }
+  .nav > a.btn { align-self: center; margin-top: 20px; }
+
+  /* dropdown groups become tap-to-expand accordions */
   .nav__dropdown { width: 100%; }
-  .nav__dropbtn { width: 100%; justify-content: flex-start; font-weight: 600; }
-  .nav__caret { display: none; }
-  .nav__submenu { position: static; transform: none; opacity: 1; visibility: visible; box-shadow: none; background: transparent; padding: 8px 0 0 16px; min-width: 0; gap: 10px; }
-  .nav__submenu a { padding: 0; }
+  .nav__dropbtn { justify-content: space-between; }
+  .nav__caret { display: inline-block; font-size: .8rem; }
+  .nav__submenu {
+    position: static; transform: none; opacity: 1; visibility: visible;
+    box-shadow: none; background: transparent; min-width: 0; display: block; gap: 0;
+    margin: 0 0 0 8px; padding: 0; border-left: 2px solid var(--cream);
+    max-height: 0; overflow: hidden; transition: max-height .28s ease;
+  }
+  .nav__dropdown.open .nav__submenu { max-height: 320px; transform: none; }
+  .nav__submenu a {
+    display: block; padding: 13px 2px 13px 16px; font-size: 1rem; font-weight: 500; color: var(--muted);
+  }
 }
 @media (max-width: 560px) {
   .leaders, .cards, .stats__grid { grid-template-columns: 1fr; }
