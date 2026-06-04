@@ -526,6 +526,17 @@
       if (!a) return {};
       a.volume = 0.55;
       function start(){ if(a.muted) return; var p=a.play(); if(p&&p.catch) p.catch(function(){}); }
+      // Unlock audio DURING the launch tap (silently) so the later, timer-driven
+      // play() on the leaders page is permitted — required by Safari/iOS/strict autoplay.
+      function unlock(){
+        try {
+          a.muted = true;
+          var p = a.play();
+          if (p && p.then) p.then(function(){ a.pause(); a.currentTime = 0; a.muted = false; })
+                            .catch(function(){ a.muted = false; });
+          else { a.pause(); a.currentTime = 0; a.muted = false; }
+        } catch(e){ a.muted = false; }
+      }
       if (btn) btn.addEventListener('click', function(e){
         e.stopPropagation();
         a.muted = !a.muted; btn.textContent = a.muted ? '🔇' : '🔊';
@@ -533,6 +544,7 @@
       });
       return {
         start: start,
+        unlock: unlock,
         el: a,
         fadeOut: function(){
           var t=setInterval(function(){ a.volume=Math.max(0,a.volume-0.07); if(a.volume<=0){ clearInterval(t); a.pause(); } },60);
@@ -618,6 +630,7 @@
       // Begins only when the LAUNCH button is pressed (guarantees music too)
       function begin(){
         if (started) return; started = true;
+        if (TDP_BGM && TDP_BGM.unlock) TDP_BGM.unlock();   // unlock audio within the tap (Safari/iOS)
         document.body.classList.add('started');
         swap(startEl, scanEl);
         ldl.textContent = 'ESTABLISHING ORIGIN';
