@@ -508,14 +508,10 @@
         try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}
         document.body.classList.remove('shake');
         document.body.classList.add('launching','blast');
-        // === THE BLAST === shockwave + hard shake + explosion of confetti at the reveal
+        // === THE BLAST === flash + shockwave + hard shake (confetti happens on the main site)
         tdpShock();
         setTimeout(tdpShock, 200);
         document.body.classList.remove('bigshake'); void document.body.offsetWidth; document.body.classList.add('bigshake');
-        setTimeout(tdpConfetti, 120);
-        setTimeout(tdpConfetti, 520);
-        setTimeout(tdpConfetti, 1100);
-        setTimeout(tdpConfetti, 1900);
         // music keeps playing; hand its playback position to index.html so it continues there
         setTimeout(function(){
           try { if (TDP_BGM && TDP_BGM.el) sessionStorage.setItem('tdpMusicTime', String(TDP_BGM.el.currentTime || 0)); } catch(e){}
