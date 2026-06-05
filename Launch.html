@@ -560,27 +560,20 @@
         done = true; if(iv) clearInterval(iv);
         fill.style.width='100%'; pct.textContent='100%';
         ldl.textContent = 'LIFTOFF';
+        try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}   // tell the website to celebrate
         document.body.classList.remove('shake');
         document.body.classList.add('launching','blast');
-        // === THE BLAST === confetti fires here on the welcome reveal while the
-        // song keeps playing. The song is NEVER handed off or resumed — it simply
-        // plays through to its END on this page, then the website opens.
+        // === THE BLAST === flash + shockwave + shake only. NO confetti here —
+        // the confetti bursts when the WEBSITE opens, with the song carried over.
         tdpShock();
         setTimeout(tdpShock, 200);
-        tdpConfetti();
-        setTimeout(tdpConfetti, 600);
-        setTimeout(tdpConfetti, 1200);
-        setTimeout(tdpConfetti, 4200);
         document.body.classList.remove('bigshake'); void document.body.offsetWidth; document.body.classList.add('bigshake');
-        // open the website the moment the song finishes (with a safety fallback)
-        function gotoSite(){ if(gotoSite.done) return; gotoSite.done = true; window.location.href = 'index.html'; }
-        var a = TDP_BGM && TDP_BGM.el;
-        if (a && !a.paused && !a.ended) {
-          a.addEventListener('ended', gotoSite, { once: true });
-          setTimeout(gotoSite, 13000);   // fallback if 'ended' never fires
-        } else {
-          setTimeout(gotoSite, 3500);    // music not playing (muted/blocked) → short hold
-        }
+        // brief welcome (~2s), then open the website — hand the song's position
+        // across so it keeps playing on the site, where the confetti fires.
+        setTimeout(function(){
+          try { if (TDP_BGM && TDP_BGM.el) sessionStorage.setItem('tdpMusicTime', String(TDP_BGM.el.currentTime || 0)); } catch(e){}
+          window.location.href = 'index.html';
+        }, 2000);
       }
 
       function showLeaders(){
