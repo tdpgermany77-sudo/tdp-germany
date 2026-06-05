@@ -136,7 +136,13 @@ a { text-decoration: none; color: inherit; }
 .eyebrow--red { background: var(--grad-red); color: #fff; }
 .hero__content h1 { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 800; line-height: 1.05; text-shadow: 0 4px 18px rgba(0,0,0,.18); }
 .hero__accent { color: #c41a12; }
-.hero__telugu { font-family: 'Tiro Telugu', serif; font-size: 1.4rem; margin: 10px 0 16px; color: #fff; }
+.hero__telugu { font-family: 'Tiro Telugu', serif; font-size: 1.4rem; margin: 10px 0 14px; color: #fff; }
+.hero__tagline {
+  display: inline-block; font-weight: 700; font-size: clamp(.82rem, 1.6vw, .98rem);
+  letter-spacing: .4px; color: var(--ink); background: var(--grad-gold);
+  padding: 8px 18px; border-radius: 999px; margin: 0 0 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
 .hero__lead { max-width: 540px; font-size: 1.05rem; color: #fff; opacity: .95; }
 .hero__actions { margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap; }
 .hero__media { position: relative; display: flex; justify-content: center; align-items: center; }
