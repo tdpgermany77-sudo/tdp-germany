@@ -270,6 +270,11 @@
       background:linear-gradient(90deg,transparent,var(--gold),var(--red),transparent); box-shadow:0 0 14px rgba(253,184,19,.8); }
     .launch-word__en { font-family:'Orbitron',sans-serif; font-weight:700; letter-spacing:4px; text-transform:uppercase;
       font-size:clamp(.78rem,2.6vw,1.15rem); line-height:1.7; color:#ffe9c2; }
+    .launch-word__url { display:inline-block; margin-top:24px; font-family:'Orbitron',sans-serif; font-weight:700;
+      letter-spacing:1.5px; font-size:clamp(.84rem,3vw,1.2rem); color:#1c1408; white-space:nowrap;
+      background:linear-gradient(135deg,#FDB813,#F36F21); padding:12px 28px; border-radius:999px;
+      box-shadow:0 0 26px rgba(253,184,19,.6); animation:urlGlow 2.2s ease-in-out infinite; }
+    .launch-word__url:hover { color:#000; }
 
     /* sound toggle */
     .audio-btn { position:fixed; bottom:74px; left:20px; z-index:5; width:42px; height:42px; border-radius:50%;
@@ -416,6 +421,7 @@
       <div class="launch-word__te">స్వాగతం</div>
       <span class="launch-word__div"></span>
       <div class="launch-word__en">Welcome to<br />NRI TDP Germany Official Website</div>
+      <a class="launch-word__url" href="https://www.tdpgermany.org" target="_blank" rel="noopener">🌐 www.tdpgermany.org</a>
     </div>
   </div>
 
