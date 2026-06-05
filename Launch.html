@@ -324,21 +324,6 @@
       <p class="start-hint">Press to begin</p>
     </section>
 
-    <!-- Stage: Globe scan (before Munich) -->
-    <section class="stage stage--stack" id="stageScan">
-      <div class="eyebrow">Establishing Origin</div>
-      <div class="globe">
-        <div class="globe__sphere">
-          <span class="globe__lon"></span>
-          <span class="globe__scan"></span>
-          <span class="globe__dot"></span>
-        </div>
-        <span class="globe__orbit"></span>
-      </div>
-      <h1 class="scan-title" id="scanTitle">LOCATING ORIGIN</h1>
-      <div class="scan-status">Scanning the Telugu diaspora across Europe…</div>
-    </section>
-
     <!-- Stage 0: Origin / Munich -->
     <section class="stage stage--stack" id="stageOrigin">
       <div class="eyebrow">Origin Located</div>
@@ -554,13 +539,11 @@
 
     // ===== Sequence: origin -> leaders -> countdown -> launch =====
     (function () {
-      var SCAN_MS    = 3500;   // globe scan screen
       var ORIGIN_MS  = 4200;   // Munich origin screen
       var LEADERS_MS = 4800;   // leaders showcase
       var START_COUNT = 10;    // countdown start
 
       var startEl   = document.getElementById('stageStart');
-      var scanEl    = document.getElementById('stageScan');
       var originEl  = document.getElementById('stageOrigin');
       var leadersEl = document.getElementById('stageLeaders');
       var countEl   = document.getElementById('stageCount');
@@ -585,12 +568,13 @@
         tdpShock();
         setTimeout(tdpShock, 200);
         document.body.classList.remove('bigshake'); void document.body.offsetWidth; document.body.classList.add('bigshake');
-        // hand the song's playback position to index.html so it keeps playing across
-        // the reveal and ENDS on the website, just after the confetti comes.
+        // Keep the welcome blast short (~2s) so plenty of the song is left to
+        // play on the website — through the confetti and ~3s past it. Hand the
+        // playback position to index.html so the song picks up where it left off.
         setTimeout(function(){
           try { if (TDP_BGM && TDP_BGM.el) sessionStorage.setItem('tdpMusicTime', String(TDP_BGM.el.currentTime || 0)); } catch(e){}
           window.location.href='index.html';
-        }, 4200);
+        }, 2000);
       }
 
       function showLeaders(){
@@ -632,27 +616,20 @@
         if (started) return; started = true;
         if (TDP_BGM && TDP_BGM.unlock) TDP_BGM.unlock();   // unlock audio within the tap (Safari/iOS)
         document.body.classList.add('started');
-        swap(startEl, scanEl);
-        ldl.textContent = 'ESTABLISHING ORIGIN';
-        scramble(document.getElementById('scanTitle'), 'LOCATING ORIGIN', 1100);
+        // straight to the München origin screen (globe-scan screen removed)
+        swap(startEl, originEl);
+        ldl.textContent = 'ORIGIN LOCATED';
+        scramble(document.querySelector('.city'), 'MÜNCHEN', 1100);
+        scramble(document.querySelector('.coords'), '48.1351° N · 11.5820° E — Germany', 1400);
 
         var seqStart = performance.now();
-        var TOTAL = SCAN_MS + ORIGIN_MS + LEADERS_MS + START_COUNT * 1000;
+        var TOTAL = ORIGIN_MS + LEADERS_MS + START_COUNT * 1000;
         (function prog(){ if(done) return;
           var p = Math.min(100, (performance.now()-seqStart)/TOTAL*100);
           fill.style.width = p+'%'; pct.textContent = Math.round(p)+'%';
           if (p < 100) requestAnimationFrame(prog);
         })();
 
-        setTimeout(showOrigin, SCAN_MS);
-      }
-
-      function showOrigin(){
-        if (done) return;
-        swap(scanEl, originEl);
-        ldl.textContent = 'ORIGIN LOCATED';
-        scramble(document.querySelector('.city'), 'MÜNCHEN', 1100);
-        scramble(document.querySelector('.coords'), '48.1351° N · 11.5820° E — Germany', 1400);
         setTimeout(showLeaders, ORIGIN_MS);
         setTimeout(startCountdown, ORIGIN_MS + LEADERS_MS);
       }

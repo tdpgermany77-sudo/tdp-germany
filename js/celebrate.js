@@ -115,16 +115,27 @@
     });
   }
 
+  function fadeOutMusic() {
+    var m = document.getElementById('bgmMain');
+    if (!m || m.paused) return;
+    var t = setInterval(function () {
+      m.volume = Math.max(0, m.volume - 0.05);
+      if (m.volume <= 0.02) { clearInterval(t); m.pause(); }
+    }, 70);
+  }
+
   function maybe() {
     var fromLaunch = false;
     try { fromLaunch = sessionStorage.getItem('tdpLaunch') === '1'; } catch (e) {}
     if (!fromLaunch) return;
     try { sessionStorage.removeItem('tdpLaunch'); } catch (e) {}   // fire only once
     continueMusic();                                              // resume launch music
-    // small delay so the page paints first, then celebrate (a few staggered blasts)
-    setTimeout(burst, 350);
-    setTimeout(burst, 1100);
-    setTimeout(burst, 1900);
+    // front-loaded celebration — energetic, but mostly settled by ~3s
+    setTimeout(burst, 150);
+    setTimeout(burst, 500);
+    setTimeout(burst, 850);
+    // keep the song playing ~3s past the confetti, then fade it out
+    setTimeout(fadeOutMusic, 6000);
   }
 
   if (document.readyState !== 'loading') maybe();
