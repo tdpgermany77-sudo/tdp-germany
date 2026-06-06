@@ -102,18 +102,9 @@
     try { t = parseFloat(sessionStorage.getItem('tdpMusicTime') || '0') || 0; sessionStorage.removeItem('tdpMusicTime'); } catch (e) {}
     m.volume = 0.55;
     function play() { var p = m.play(); if (p && p.catch) p.catch(function () {}); }
-    // pick up where the launch left off (continuation of the FIRST pass)
+    // pick up where the launch left off and play the song through ONCE, then stop
     try { if (t) m.currentTime = t; } catch (e) {}
     play();
-
-    // === play the song through TWICE (one repeat), then stop ===
-    // The first pass started on the launch page (at the leaders stage); when it
-    // ends here we restart it once for the second pass — no fade, so it's
-    // continuous. After the second pass it simply stops.
-    var repeated = false;
-    m.addEventListener('ended', function () {
-      if (!repeated) { repeated = true; try { m.currentTime = 0; } catch (e) {} play(); }
-    });
 
     // Never let scrolling (or anything) leave it silent: if it's paused — e.g.
     // autoplay was blocked on this fresh page — start it on the first user
