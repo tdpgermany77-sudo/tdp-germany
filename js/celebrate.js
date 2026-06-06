@@ -129,13 +129,11 @@
     try { fromLaunch = sessionStorage.getItem('tdpLaunch') === '1'; } catch (e) {}
     if (!fromLaunch) return;
     try { sessionStorage.removeItem('tdpLaunch'); } catch (e) {}   // fire only once
-    continueMusic();                                              // resume launch music
-    // front-loaded celebration — energetic, but mostly settled by ~3s
-    setTimeout(burst, 150);
-    setTimeout(burst, 500);
-    setTimeout(burst, 850);
-    // keep the song playing ~3s past the confetti, then fade it out
-    setTimeout(fadeOutMusic, 6000);
+    // The full song already played on the launch page — here we ONLY celebrate.
+    setTimeout(burst, 200);
+    setTimeout(burst, 550);
+    setTimeout(burst, 900);
+    setTimeout(burst, 1300);
   }
 
   if (document.readyState !== 'loading') maybe();
