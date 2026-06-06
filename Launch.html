@@ -569,20 +569,16 @@
         try{ sessionStorage.setItem('tdpLaunch','1'); }catch(e){}   // website fires confetti on open
         document.body.classList.remove('shake');
         document.body.classList.add('launching','blast');
-        // === THE BLAST === no confetti here. The FULL song keeps playing to its
-        // end on THIS page (never paused or handed off). index.html opens the
-        // moment the song finishes, and the confetti bursts there on open.
+        // === THE BLAST === no confetti here — it fires on the website open. The
+        // welcome shows ~2s, then index.html opens with the song's position handed
+        // across so the music keeps playing onto the site.
         tdpShock();
         setTimeout(tdpShock, 200);
         document.body.classList.remove('bigshake'); void document.body.offsetWidth; document.body.classList.add('bigshake');
-        function gotoSite(){ if(gotoSite.done) return; gotoSite.done = true; window.location.href = 'index.html'; }
-        var a = TDP_BGM && TDP_BGM.el;
-        if (a && !a.paused && !a.ended) {
-          a.addEventListener('ended', gotoSite, { once: true });   // open the site when the song ends
-          setTimeout(gotoSite, 14000);                             // safety fallback
-        } else {
-          setTimeout(gotoSite, 3500);                              // music muted/blocked → short hold
-        }
+        setTimeout(function(){
+          try { if (TDP_BGM && TDP_BGM.el) sessionStorage.setItem('tdpMusicTime', String(TDP_BGM.el.currentTime || 0)); } catch(e){}
+          window.location.href = 'index.html';
+        }, 2000);
       }
 
       function showLeaders(){

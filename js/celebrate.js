@@ -129,7 +129,7 @@
     try { fromLaunch = sessionStorage.getItem('tdpLaunch') === '1'; } catch (e) {}
     if (!fromLaunch) return;
     try { sessionStorage.removeItem('tdpLaunch'); } catch (e) {}   // fire only once
-    // The full song already played on the launch page — here we ONLY celebrate.
+    continueMusic();                                              // keep the song playing onto the site
     setTimeout(burst, 200);
     setTimeout(burst, 550);
     setTimeout(burst, 900);
