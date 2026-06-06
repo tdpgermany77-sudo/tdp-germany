@@ -101,17 +101,26 @@
     var t = 0;
     try { t = parseFloat(sessionStorage.getItem('tdpMusicTime') || '0') || 0; sessionStorage.removeItem('tdpMusicTime'); } catch (e) {}
     m.volume = 0.55;
-    function play() { try { if (t) m.currentTime = t; } catch (e) {} var p = m.play(); if (p && p.catch) p.catch(function () {}); }
+    function play() { var p = m.play(); if (p && p.catch) p.catch(function () {}); }
+    // pick up where the launch left off (continuation of the FIRST pass)
+    try { if (t) m.currentTime = t; } catch (e) {}
     play();
-    // if autoplay is blocked on the fresh page, resume on first interaction
-    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
-      window.addEventListener(ev, function once() { if (m.paused) play(); }, { once: true });
+
+    // === play the song through TWICE (one repeat), then stop ===
+    // The first pass started on the launch page (at the leaders stage); when it
+    // ends here we restart it once for the second pass — no fade, so it's
+    // continuous. After the second pass it simply stops.
+    var repeated = false;
+    m.addEventListener('ended', function () {
+      if (!repeated) { repeated = true; try { m.currentTime = 0; } catch (e) {} play(); }
     });
-    // gentle fade-out at the very end of the track
-    m.addEventListener('timeupdate', function () {
-      if (m.duration && m.duration - m.currentTime < 2) {
-        m.volume = Math.max(0, m.volume - 0.04);
-      }
+
+    // Never let scrolling (or anything) leave it silent: if it's paused — e.g.
+    // autoplay was blocked on this fresh page — start it on the first user
+    // gesture. When it's already playing this does nothing, so scrolling can
+    // never pause it.
+    ['pointerdown', 'keydown', 'touchstart', 'wheel', 'scroll'].forEach(function (ev) {
+      window.addEventListener(ev, function once() { if (m.paused && !m.ended) play(); }, { once: true, passive: true });
     });
   }
 
